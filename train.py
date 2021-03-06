@@ -6,6 +6,8 @@ import data
 from utils.options import opt
 from tqdm import tqdm
 
+from utils.utils import load_checkpoint, save_checkpoint
+
 
 def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
                 optimizer: torch.optim.Optimizer, loader: torch.utils.data.DataLoader, device: torch.device):
@@ -44,13 +46,13 @@ def main():
     criterion = nn.NLLLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
     device = torch.device(opt.device)
-    for ep in range(1, 11):
+    model, epoch, optimizer = load_checkpoint(opt.checkpoint_path, model, optimizer, device)
+    for ep in range(epoch + 1, 11):
         train_epoch(ep, model, criterion, optimizer, train_dl, device)
         print(f"Test accuracy after {ep} epochs = {test(model, test_dl, device)}")
+        if ep % opt.save_freq == 0:
+            save_checkpoint(model, optimizer, ep, opt)
 
 
 if __name__ == '__main__':
     main()
-
-
-
