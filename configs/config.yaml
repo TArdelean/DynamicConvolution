@@ -1,0 +1,3 @@
+nof_kernels: 4
+model_class: 'SimpleConvNet'
+dataset_class: 'MNIST_dataset'
