@@ -3,13 +3,14 @@ import torch.nn.functional as F
 from torch import nn
 
 # Simple example for testing from https://github.com/pytorch/examples/blob/master/mnist/main.py
+from models.common import BaseModel
 
 
-class SimpleConvNet(nn.Module):
-    def __init__(self, c_in=1, out_dim=10):
-        super().__init__()
-        self.conv1 = nn.Conv2d(c_in, 32, 3, 1)
-        self.conv2 = nn.Conv2d(32, 64, 3, 1)
+class SimpleConvNet(BaseModel):
+    def __init__(self, ConvLayer, c_in=1, out_dim=10):
+        super().__init__(ConvLayer)
+        self.conv1 = nn.Conv2d(c_in, 32, 3, 1)  # First convolution is always non-dynamic
+        self.conv2 = self.ConvLayer(32, 64, 3, 1)
         self.dropout1 = nn.Dropout(0.25)
         self.dropout2 = nn.Dropout(0.5)
         self.fc1 = nn.Linear(9216, 128)

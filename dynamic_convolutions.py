@@ -21,7 +21,8 @@ class AttentionLayer(nn.Module):
 
 
 class DynamicConvolution(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, nof_kernels, reduce=4, groups=1, bias=True, **kwargs):
+    def __init__(self, nof_kernels, reduce, in_channels, out_channels, kernel_size,
+                 stride=1, padding=0, dilation=1, groups=1, bias=True):
         """
         Implementation of Dynamic convolution layer
         :param in_channels: number of input channels.
@@ -35,12 +36,12 @@ class DynamicConvolution(nn.Module):
         """
         super().__init__()
         self.groups = groups
-        self.conv_args = kwargs
+        self.conv_args = {'stride': stride, 'padding': padding, 'dilation': dilation}
         self.nof_kernels = nof_kernels
-        self.attention = AttentionLayer(in_channels, in_channels // reduce, nof_kernels)
+        self.attention = AttentionLayer(in_channels, max(1, in_channels // reduce), nof_kernels)
         kernel_size = _pair(kernel_size)
         self.kernels_weights = nn.Parameter(torch.Tensor(
-            nof_kernels, out_channels, in_channels // groups, *kernel_size), requires_grad=True)
+            nof_kernels, out_channels, in_channels // self.groups, *kernel_size), requires_grad=True)
         if bias:
             self.kernels_bias = nn.Parameter(torch.Tensor(nof_kernels, out_channels), requires_grad=True)
         else:
@@ -79,5 +80,5 @@ class DynamicConvolution(nn.Module):
 if __name__ == '__main__':
     torch.manual_seed(41)
     t = torch.randn(1, 3, 16, 16)
-    conv = DynamicConvolution(3, 8, kernel_size=3, nof_kernels=3, reduce=1, padding=1, bias=True)
+    conv = DynamicConvolution(3, 1, in_channels=3, out_channels=8, kernel_size=3, padding=1, bias=True)
     print(conv(t, 10).sum())

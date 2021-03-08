@@ -1,4 +1,5 @@
 import torch.utils.data
+from torch.utils.tensorboard import SummaryWriter
 
 import models
 from torch import nn
@@ -10,10 +11,12 @@ from utils.utils import load_checkpoint, save_checkpoint
 
 
 def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
-                optimizer: torch.optim.Optimizer, loader: torch.utils.data.DataLoader, device: torch.device):
+                optimizer: torch.optim.Optimizer, loader: torch.utils.data.DataLoader, device: torch.device,
+                writer: SummaryWriter = None):
     model.train()
     print(f"Training epoch {epoch}")
     t_bar = tqdm(loader)
+    iteration = (epoch-1) * len(loader.dataset)
     for b_idx, batch in enumerate(t_bar):
         in_data, target = batch
         in_data, target = in_data.to(device), target.to(device)
@@ -22,7 +25,10 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        iteration += len(in_data)
         t_bar.set_description(f"Current loss={loss.item():.3f}", refresh=True)
+        if writer:
+            writer.add_scalar("Loss/train", loss.item(), iteration)
 
 
 def test(model: nn.Module, loader: torch.utils.data.DataLoader, device: torch.device):
@@ -41,15 +47,21 @@ def test(model: nn.Module, loader: torch.utils.data.DataLoader, device: torch.de
 
 def main():
     model = models.create_model(opt)
+    print("Training with network:")
+    print(model)
+    writer = SummaryWriter(opt.checkpoints_dir)
+
     train_dl = data.create_data_loader(opt, "train")
     test_dl = data.create_data_loader(opt, "test")
     criterion = nn.NLLLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
     device = torch.device(opt.device)
     model, epoch, optimizer = load_checkpoint(opt.checkpoint_path, model, optimizer, device)
-    for ep in range(epoch + 1, 11):
-        train_epoch(ep, model, criterion, optimizer, train_dl, device)
-        print(f"Test accuracy after {ep} epochs = {test(model, test_dl, device)}")
+    for ep in range(epoch + 1, opt.max_epoch+1):
+        train_epoch(ep, model, criterion, optimizer, train_dl, device, writer)
+        test_score = test(model, test_dl, device)
+        writer.add_scalar("Accuracy/test", test_score, ep * len(test_dl.dataset))
+        print(f"Test accuracy after {ep} epochs = {test_score}")
         if ep % opt.save_freq == 0:
             save_checkpoint(model, optimizer, ep, opt)
 

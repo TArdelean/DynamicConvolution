@@ -7,12 +7,15 @@ class Options(ParsableOptions):
 
     # noinspection PyAttributeOutsideInit
     def initialize(self):
-        self.nof_kernels = 4
+        self.use_dynamic = False
+        self.nof_kernels = 4  # Parameter is ignored if not using dynamic
+        self.reduce = 4  # Dimension reduction in hidden layer for attention in dynamic convolutions
         self.experiments = "experiments"
         self.model_class = ""
         self.dataset_class = ""  # Can also be a function which returns a dataset instance
         self.experiment_name = "attempt"
-        self.checkpoint_path = "experiments/attempt/attempt_4.pth"
+        self.checkpoint_path = None  # e.g. "experiments/attempt/attempt_4.pth"
+        self.max_epoch = 10
         self.save_freq = 1
         self.batch_size = 16
         self.num_workers = 2
