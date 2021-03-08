@@ -4,6 +4,7 @@ import torch.utils.data
 
 from utils.options import Options
 from .mnist_dataset import MNIST_dataset
+from .tinyimagenet_dataset import TinyImageNet_dataset
 
 
 def create_data_loader(opt: Options, stage):
