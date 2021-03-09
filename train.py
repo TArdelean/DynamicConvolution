@@ -4,13 +4,14 @@ from torch.utils.tensorboard import SummaryWriter
 import models
 from torch import nn
 import data
+from models.common import TemperatureScheduler
 from utils.options import opt
 from tqdm import tqdm
 
 from utils.utils import load_checkpoint, save_checkpoint
 
 
-def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
+def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module, temperature: TemperatureScheduler,
                 optimizer: torch.optim.Optimizer, loader: torch.utils.data.DataLoader, device: torch.device,
                 writer: SummaryWriter = None):
     model.train()
@@ -20,7 +21,7 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
     for b_idx, batch in enumerate(t_bar):
         in_data, target = batch
         in_data, target = in_data.to(device), target.to(device)
-        out = model(in_data)
+        out = model(in_data, temperature.get(epoch))
         loss = criterion(out, target)
         optimizer.zero_grad()
         loss.backward()
@@ -31,14 +32,15 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module,
             writer.add_scalar("Loss/train", loss.item(), iteration)
 
 
-def test(model: nn.Module, loader: torch.utils.data.DataLoader, device: torch.device):
+def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoader, device: torch.device):
     model.eval()
+    print(temperature)
     correct = 0
     with torch.no_grad():
         for batch in loader:
             in_data, target = batch
             in_data, target = in_data.to(device), target.to(device)
-            output = model(in_data)
+            output = model(in_data, temperature)
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
@@ -54,12 +56,13 @@ def main():
     train_dl = data.create_data_loader(opt, "train")
     test_dl = data.create_data_loader(opt, "test")
     criterion = nn.NLLLoss()
+    temperature = TemperatureScheduler(*opt.temperature)
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
     device = torch.device(opt.device)
     model, epoch, optimizer = load_checkpoint(opt.checkpoint_path, model, optimizer, device)
     for ep in range(epoch + 1, opt.max_epoch+1):
-        train_epoch(ep, model, criterion, optimizer, train_dl, device, writer)
-        test_score = test(model, test_dl, device)
+        train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer)
+        test_score = test(model, temperature.get(ep), test_dl, device)
         writer.add_scalar("Accuracy/test", test_score, ep * len(test_dl.dataset))
         print(f"Test accuracy after {ep} epochs = {test_score}")
         if ep % opt.save_freq == 0:

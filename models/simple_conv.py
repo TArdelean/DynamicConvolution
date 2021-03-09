@@ -16,10 +16,10 @@ class SimpleConvNet(BaseModel):
         self.fc1 = nn.Linear(9216, 128)
         self.fc2 = nn.Linear(128, out_dim)
 
-    def forward(self, x):
+    def forward(self, x, temperature):
         x = self.conv1(x)
         x = F.relu(x)
-        x = self.conv2(x)
+        x = self.conv2(x, temperature)
         x = F.relu(x)
         x = F.max_pool2d(x, 2)
         x = self.dropout1(x)
