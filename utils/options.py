@@ -10,6 +10,7 @@ class Options(ParsableOptions):
         self.use_dynamic = False
         self.nof_kernels = 4  # Parameter is ignored if not using dynamic
         self.reduce = 4  # Dimension reduction in hidden layer for attention in dynamic convolutions
+        self.temperature = (30, 1, 10)  # Temperature parameters: (initial_value, final_value, final_epoch)
         self.experiments = "experiments"
         self.model_class = ""
         self.dataset_class = ""  # Can also be a function which returns a dataset instance
