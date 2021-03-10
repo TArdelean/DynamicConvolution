@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch.nn import init
 from torch.nn.modules.utils import _pair
 from torch import nn
+from models.common import TempModule
 
 
 class AttentionLayer(nn.Module):
@@ -20,7 +21,7 @@ class AttentionLayer(nn.Module):
         return F.softmax(scores / temperature, dim=-1)
 
 
-class DynamicConvolution(nn.Module):
+class DynamicConvolution(TempModule):
     def __init__(self, nof_kernels, reduce, in_channels, out_channels, kernel_size,
                  stride=1, padding=0, dilation=1, groups=1, bias=True):
         """
@@ -75,6 +76,13 @@ class DynamicConvolution(nn.Module):
         out = out.view(batch_size, -1, *out.shape[-2:])  # batch_size X out_C X H' x W'
 
         return out
+
+
+def dynamic_convolution_generator(nof_kernels, reduce):
+    def conv_layer(*args, **kwargs):
+        return DynamicConvolution(nof_kernels, reduce, *args, **kwargs)
+
+    return conv_layer
 
 
 if __name__ == '__main__':
