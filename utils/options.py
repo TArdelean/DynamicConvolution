@@ -20,7 +20,10 @@ class Options(ParsableOptions):
         self.save_freq = 1
         self.batch_size = 16
         self.num_workers = 2
-        self.lr = 0.001
+        self.optimizer = "SGD"
+        self.optimizer_args = (0.001, 0.9)  # e.g. (lr, momentum)
+        self.scheduler = "StepLR"
+        self.scheduler_args = (30, 0.1)  # e.g. (step_size, gamma) for StepLR
         self.device = "cpu"
 
     # noinspection PyAttributeOutsideInit
@@ -33,6 +36,3 @@ class Options(ParsableOptions):
     def print_to_file(self, **kwargs):
         super(Options, self).print_to_file(
             os.path.join(self.checkpoints_dir, "config.yaml"))
-
-
-opt = Options(config_file_arg="config_path")

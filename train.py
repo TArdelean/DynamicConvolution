@@ -5,7 +5,7 @@ import models
 from torch import nn
 import data
 from models.common import TemperatureScheduler
-from utils.options import opt
+from utils.options import Options
 from tqdm import tqdm
 
 from utils.utils import load_checkpoint, save_checkpoint
@@ -34,7 +34,6 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module, temperature:
 
 def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoader, device: torch.device):
     model.eval()
-    print(temperature)
     correct = 0
     with torch.no_grad():
         for batch in loader:
@@ -47,7 +46,7 @@ def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoad
     return correct / len(loader.dataset)
 
 
-def main():
+def main(opt: Options):
     model = models.create_model(opt)
     print("Training with network:")
     print(model)
@@ -57,12 +56,14 @@ def main():
     test_dl = data.create_data_loader(opt, "test")
     criterion = nn.NLLLoss()
     temperature = TemperatureScheduler(*opt.temperature)
-    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
+    optimizer = getattr(torch.optim, opt.optimizer)(model.parameters(), *opt.optimizer_args)
+    scheduler = getattr(torch.optim.lr_scheduler, opt.scheduler)(optimizer, *opt.scheduler_args)
     device = torch.device(opt.device)
     model, epoch, optimizer = load_checkpoint(opt.checkpoint_path, model, optimizer, device)
     for ep in range(epoch + 1, opt.max_epoch+1):
         train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer)
         test_score = test(model, temperature.get(ep), test_dl, device)
+        scheduler.step()
         writer.add_scalar("Accuracy/test", test_score, ep * len(test_dl.dataset))
         print(f"Test accuracy after {ep} epochs = {test_score}")
         if ep % opt.save_freq == 0:
@@ -70,4 +71,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    options = Options(config_file_arg="config_path")
+    main(options)
