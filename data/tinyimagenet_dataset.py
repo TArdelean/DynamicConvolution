@@ -15,7 +15,6 @@ def TinyImageNet_dataset(stage="train"):
         return TinyImageNetDataset('datasets/', split="train", download=True,
                                    transform=transforms.Compose([
                                        transforms.RandomResizedCrop(56),
-                                       transforms.Resize(64),
                                        transforms.RandomHorizontalFlip(),
                                        transforms.ToTensor(),
                                        normalize,
@@ -24,7 +23,6 @@ def TinyImageNet_dataset(stage="train"):
         return TinyImageNetDataset('datasets/', split="val", download=True,
                                    transform=transforms.Compose([
                                        transforms.CenterCrop(56),
-                                       transforms.Resize(64),
                                        transforms.ToTensor(),
                                        normalize
                                    ]))
