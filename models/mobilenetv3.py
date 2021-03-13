@@ -121,7 +121,7 @@ class MobileBottleneck(TempModule):
 
 
 class MobileNetV3(BaseModel):
-    def __init__(self, ConvLayer, n_class=200, input_size=64, dropout=0.8, mode='small', width_mult=1.0):
+    def __init__(self, ConvLayer, n_class=200, input_size=56, dropout=0.2, mode='small', width_mult=1.0, s=1):
         super(MobileNetV3, self).__init__(ConvLayer)
         input_channel = 16
         last_channel = 1280
@@ -149,7 +149,7 @@ class MobileNetV3(BaseModel):
             # refer to Table 2 in paper
             mobile_setting = [
                 # k, exp, c,  se,     nl,  s,
-                [3, 16, 16, True, 'RE', 2],
+                [3, 16, 16, True, 'RE', s],
                 [3, 72, 24, False, 'RE', 2],
                 [3, 88, 24, False, 'RE', 1],
                 [5, 96, 40, True, 'HS', 2],
@@ -165,9 +165,8 @@ class MobileNetV3(BaseModel):
             raise NotImplementedError
 
         # building first layer
-        assert input_size % 32 == 0
         last_channel = make_divisible(last_channel * width_mult) if width_mult > 1.0 else last_channel
-        self.features = [conv_bn(3, input_channel, 2, nlin_layer=Hswish)]
+        self.features = [conv_bn(3, input_channel, s, nlin_layer=Hswish)]
         self.classifier = []
 
         # building mobile blocks
