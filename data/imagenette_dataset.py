@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
@@ -10,37 +9,36 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 
-def TinyImageNet_dataset(stage="train"):
+def Imagenette_dataset(stage="train"):
     if stage == "train":
-        return TinyImageNetDataset('datasets/', split="train", download=True,
+        return ImagenetteDataset('datasets/', split="train", download=True,
                                    transform=transforms.Compose([
                                        transforms.RandomAffine(15, None, (0.9, 1.1)),
-                                       transforms.RandomResizedCrop(56, scale=(0.25, 1.0)),
+                                       transforms.RandomResizedCrop(224, scale=(0.25, 1.0)),
                                        transforms.RandomHorizontalFlip(),
                                        transforms.ColorJitter(0.3, 0.3, 0.2, 0.1),
                                        transforms.GaussianBlur(5, (0.1, 0.5)),
                                        transforms.ToTensor(),
-                                       normalize,
+                                       normalize
                                    ]))
     else:
-        return TinyImageNetDataset('datasets/', split="val", download=True,
+        return ImagenetteDataset('datasets/', split="val", download=True,
                                    transform=transforms.Compose([
-                                       transforms.CenterCrop(56),
+                                       transforms.CenterCrop(224),
                                        transforms.ToTensor(),
                                        normalize
                                    ]))
 
 
-class TinyImageNetDataset(ImageFolder):
+class ImagenetteDataset(ImageFolder):
     """
-        Dataset for TinyImageNet-200
-        credits: https://gist.github.com/lromor/bcfc69dcf31b2f3244358aea10b7a11b
+        Dataset for Imagenette: a subset of 10 easily classified classes from Imagenet
     """
-    base_folder = 'tiny-imagenet-200'
+    base_folder = 'imagenette2-320'
     zip_md5 = '90528d7ca1a48142e341f4ef8d21d0de'
     splits = ('train', 'val')
-    filename = 'tiny-imagenet-200.zip'
-    url = 'http://cs231n.stanford.edu/tiny-imagenet-200.zip'
+    filename = 'imagenette2-320.tgz'
+    url = 'https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz'
 
     def __init__(self, root, split='train', download=False, **kwargs):
         self.data_root = os.path.expanduser(root)
@@ -73,43 +71,4 @@ class TinyImageNetDataset(ImageFolder):
             return
         download_and_extract_archive(
             self.url, self.data_root, filename=self.filename,
-            remove_finished=True, md5=self.zip_md5)
-        assert 'val' in self.splits
-        normalize_tin_val_folder_structure(
-            os.path.join(self.dataset_folder, 'val'))
-
-
-def normalize_tin_val_folder_structure(path,
-                                       images_folder='images',
-                                       annotations_file='val_annotations.txt'):
-    # Check if files/annotations are still there to see
-    # if we already run reorganize the folder structure.
-    images_folder = os.path.join(path, images_folder)
-    annotations_file = os.path.join(path, annotations_file)
-
-    # Exists
-    if not os.path.exists(images_folder) \
-            and not os.path.exists(annotations_file):
-        if not os.listdir(path):
-            raise RuntimeError('Validation folder is empty.')
-        return
-
-    # Parse the annotations
-    with open(annotations_file) as f:
-        for line in f:
-            values = line.split()
-            img = values[0]
-            label = values[1]
-            img_file = os.path.join(images_folder, values[0])
-            label_folder = os.path.join(path, label)
-            os.makedirs(label_folder, exist_ok=True)
-            try:
-                shutil.move(img_file, os.path.join(label_folder, img))
-            except FileNotFoundError:
-                continue
-
-    os.sync()
-    assert not os.listdir(images_folder)
-    shutil.rmtree(images_folder)
-    os.remove(annotations_file)
-    os.sync()
+            remove_finished=True)
