@@ -28,6 +28,7 @@ class Options(ParsableOptions):
 
     # noinspection PyAttributeOutsideInit
     def proc(self):
+        super().proc()
         self.checkpoints_dir = os.path.join(self.experiments, self.experiment_name)
         if not os.path.exists(self.checkpoints_dir):
             os.makedirs(self.checkpoints_dir)

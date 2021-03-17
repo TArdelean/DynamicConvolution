@@ -3,5 +3,4 @@ dataset_class: 'MNIST_dataset'
 save_freq: 1
 batch_size: 16
 num_workers: 2
-lr: 0.001
 device: 'cpu'

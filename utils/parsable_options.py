@@ -76,3 +76,4 @@ class ParsableOptions:
                 else:
                     parsed_value = eval(value)
                 self.__setattr__(identifier, parsed_value)
+        return self

@@ -59,7 +59,7 @@ def main(opt: Options):
     optimizer = getattr(torch.optim, opt.optimizer)(model.parameters(), *opt.optimizer_args)
     scheduler = getattr(torch.optim.lr_scheduler, opt.scheduler)(optimizer, *opt.scheduler_args)
     device = torch.device(opt.device)
-    model, epoch, optimizer = load_checkpoint(opt.checkpoint_path, model, optimizer, device)
+    model, epoch, optimizer, scheduler = load_checkpoint(opt.checkpoint_path, model, optimizer, scheduler, device)
     for ep in range(epoch + 1, opt.max_epoch+1):
         train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer)
         test_score = test(model, temperature.get(ep), test_dl, device)
@@ -67,7 +67,7 @@ def main(opt: Options):
         writer.add_scalar("Accuracy/test", test_score, ep * len(test_dl.dataset))
         print(f"Test accuracy after {ep} epochs = {test_score}")
         if ep % opt.save_freq == 0:
-            save_checkpoint(model, optimizer, ep, opt)
+            save_checkpoint(model, optimizer, scheduler, ep, opt)
 
 
 if __name__ == '__main__':
