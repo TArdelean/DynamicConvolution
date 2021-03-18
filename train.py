@@ -56,7 +56,7 @@ def main(opt: Options):
 
     train_dl = data.create_data_loader(opt, "train")
     test_dl = data.create_data_loader(opt, "test")
-    criterion = nn.NLLLoss()
+    criterion = nn.CrossEntropyLoss()
     temperature = TemperatureScheduler(*opt.temperature)
     optimizer = getattr(torch.optim, opt.optimizer)(model.parameters(), *opt.optimizer_args)
     scheduler = getattr(torch.optim.lr_scheduler, opt.scheduler)(optimizer, *opt.scheduler_args)

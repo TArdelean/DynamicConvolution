@@ -90,7 +90,7 @@ class InvertedResidual(TempModule):
 
 
 class MobileNetV2(BaseModel):
-    def __init__(self, conv, num_classes=1000, depth_multiplier=1.):
+    def __init__(self, conv, num_classes=200, depth_multiplier=0.35):
         super(MobileNetV2, self).__init__(conv)
         # setting of inverted residual blocks
         self.cfgs = [
