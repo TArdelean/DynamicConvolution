@@ -36,13 +36,16 @@ class DynamicConvolution(TempModule):
         :param bias: If True, convolutions also have a learnable bias
         """
         super().__init__()
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+
         self.groups = groups
         self.conv_args = {'stride': stride, 'padding': padding, 'dilation': dilation}
         self.nof_kernels = nof_kernels
         self.attention = AttentionLayer(in_channels, max(1, in_channels // reduce), nof_kernels)
-        kernel_size = _pair(kernel_size)
+        self.kernel_size = _pair(kernel_size)
         self.kernels_weights = nn.Parameter(torch.Tensor(
-            nof_kernels, out_channels, in_channels // self.groups, *kernel_size), requires_grad=True)
+            nof_kernels, out_channels, in_channels // self.groups, *self.kernel_size), requires_grad=True)
         if bias:
             self.kernels_bias = nn.Parameter(torch.Tensor(nof_kernels, out_channels), requires_grad=True)
         else:

@@ -1,3 +1,5 @@
+import os
+
 import torch.utils.data
 from torch.utils.tensorboard import SummaryWriter
 
@@ -71,5 +73,7 @@ def main(opt: Options):
 
 
 if __name__ == '__main__':
-    options = Options(config_file_arg="config_path")
-    main(options)
+
+    opt = Options(config_file_arg="/home/sayan/Desktop/ml_project/DynamicConvolution/configs/mobilenetv2.yaml", suppress_parse=True)
+    opt.load_from_file("/home/sayan/Desktop/ml_project/DynamicConvolution/configs/mobilenetv2.yaml").proc()
+    main(opt)
