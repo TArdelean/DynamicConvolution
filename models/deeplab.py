@@ -20,7 +20,7 @@ from .deeplab_details.backbone import build_backbone
 
 __all__ = ['DeepLab', 'deeplab']
 
-class DeepLab(nn.Module):
+class DeepLab(BaseModel):
     def __init__(self, ConvLayer, backbone='resnet', output_stride=16, num_classes=21,
                  sync_bn=True, freeze_bn=False, lr=0.007):
         super(DeepLab, self).__init__()
