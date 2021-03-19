@@ -113,8 +113,7 @@ class CustomToTensor(object):
         mask = np.array(mask).astype(np.float32)
 
         img = torch.from_numpy(img).float()
-        mask = torch.from_numpy(mask).float()
-
+        mask = torch.LongTensor(mask)
         return img, mask
 
 
