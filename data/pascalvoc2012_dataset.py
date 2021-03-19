@@ -22,7 +22,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
                                             CustomRandomGaussianBlur(),
                                             # NOTE: original repo has args parameter  
                                             # CustomRandomScaleCrop(base_size=args.base_size, crop_size=args.crop_size),
-                                            CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                            CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                             CustomToTensor(),
                                         ]))
         if use_sbd_dataset:
@@ -35,7 +35,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
         return datasets.VOCSegmentation('datasets/', year='2012', image_set='val', download=download,
                                         transforms=CustomCompose([
                                             CustomFixScaleCrop(crop_size=513),
-                                            CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                            CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                             CustomToTensor(),
                                         ]))
 
