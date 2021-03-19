@@ -27,6 +27,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
                                         ]))
         if use_sbd_dataset:
             sbd_train = SB_dataset(stage)
+            print('Merging PascalVOC2012 and SB datasets')
             return torch.utils.data.ConcatDataset([voc_train, sbd_train])
         else:
             return voc_train
