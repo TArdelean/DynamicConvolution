@@ -12,5 +12,5 @@ def MNIST_dataset(stage="train", download=True):
         return datasets.MNIST('datasets/', train=True, download=download,
                               transform=transform)
     else:
-        return datasets.MNIST('datasets/', train=False, download=download
+        return datasets.MNIST('datasets/', train=False, download=download,
                               transform=transform)
