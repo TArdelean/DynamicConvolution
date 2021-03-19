@@ -35,7 +35,8 @@ class DeepLab(BaseModel):
         self.backbone = build_backbone(backbone, output_stride, BatchNorm)
         self.aspp = build_aspp(backbone, output_stride, BatchNorm)
         self.decoder = build_decoder(num_classes, backbone, BatchNorm)
-        self.lr = lr
+        self._lr = lr
+        print('LR', self._lr)
         self.freeze_bn = freeze_bn
 
     def forward(self, input):
@@ -85,8 +86,8 @@ class DeepLab(BaseModel):
                             if p.requires_grad:
                                 yield p
     def parameters(self):
-        return [{'params': self.get_1x_lr_params(), 'lr': self.lr},
-                {'params': self.get_10x_lr_params(), 'lr': self.lr * 10}]
+        return [{'params': self.get_1x_lr_params(), 'lr': self._lr},
+                {'params': self.get_10x_lr_params(), 'lr': self._lr * 10}]
                 
 if __name__ == "__main__":
     model = DeepLab(backbone='mobilenet', output_stride=16)
