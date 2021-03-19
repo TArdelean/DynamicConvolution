@@ -11,9 +11,9 @@ import numpy as np
 
 from PIL import Image, ImageOps, ImageFilter
 
-def SB_dataset(stage="train", download=True):
+def SB_dataset(stage="train", download=True, root='datasets/SBD'):
     if stage == "train":
-        return datasets.SBDataset('datasets/SBD', image_set='train_noval',
+        return datasets.SBDataset(root, image_set='train_noval',
                                 download=download, mode='segmentation',
                                 transforms=CustomCompose([
                                     CustomRandomHorizontalFlip(),
@@ -25,7 +25,7 @@ def SB_dataset(stage="train", download=True):
                                     CustomToTensor(),
                                 ]))
     else:
-        return datasets.SBDataset('datasets/SBD', image_set='val', 
+        return datasets.SBDataset(root, image_set='val', 
                                 download=download, mode='segmentation',
                                 transforms=CustomCompose([
                                     CustomFixScaleCrop(crop_size=200),

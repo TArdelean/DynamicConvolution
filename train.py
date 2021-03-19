@@ -9,7 +9,7 @@ from utils.options import Options
 from utils.segmentation_metrics import SegmentationEvaluator
 import sys
 
-from tqdm import tqdm
+from tqdm import tqdm_notebook as tqdm
 
 from utils.utils import load_checkpoint, save_checkpoint
 
@@ -73,6 +73,8 @@ def test_segmentation(model: nn.Module, temperature: float, loader: torch.utils.
     return mIoU
 
 def main(opt: Options):
+    opt.device = 'cpu'
+    opt.num_workers = 1
     model = models.create_model(opt)
     print("Training with network:")
     print(model)
