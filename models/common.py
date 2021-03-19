@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torch.nn import *
 
 
 class Conv2dWrapper(nn.Conv2d):
@@ -54,3 +55,21 @@ class CustomSequential(TempModule):
             else:
                 x = layer(x)
         return x
+
+
+# Implementation inspired from
+# https://github.com/jadore801120/attention-is-all-you-need-pytorch/blob/master/train.py#L38 and
+# https://github.com/pytorch/pytorch/issues/7455
+class SmoothNLLLoss(nn.Module):
+    def __init__(self, smoothing=0.0, dim=-1):
+        super().__init__()
+        self.smoothing = smoothing
+        self.dim = dim
+
+    def forward(self, prediction, target):
+        with torch.no_grad():
+            smooth_target = torch.zeros_like(prediction)
+            n_class = prediction.size(self.dim)
+            smooth_target.fill_(self.smoothing / (n_class - 1))
+            smooth_target.scatter_(1, target.unsqueeze(1), 1 - self.smoothing)
+        return torch.mean(torch.sum(-smooth_target * prediction, dim=self.dim))
