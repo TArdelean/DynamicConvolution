@@ -26,7 +26,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
                                             CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
                                         ]))
         if use_sbd_dataset:
-            sbd_train = SB_dataset(stage)
+            sbd_train = SB_dataset(stage, download=download)
             print('Merging PascalVOC2012 and SB datasets')
             return torch.utils.data.ConcatDataset([voc_train, sbd_train])
         else:
