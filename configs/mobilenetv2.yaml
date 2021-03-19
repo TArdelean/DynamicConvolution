@@ -1,7 +1,7 @@
 model_class: 'MobileNetV2'
-dataset_class: 'Imagenette_dataset'
+dataset_class: 'TinyImageNet_dataset'
 save_freq: 5
-batch_size: 150
+batch_size: 600
 num_workers: 2
 device: 'cuda'
 max_epoch: 300
