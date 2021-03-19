@@ -35,17 +35,18 @@ class BasicBlock(BaseModel):
 
 
 class ResNet(BaseModel):
-    def __init__(self, ConvLayer, block, num_blocks, num_classes=200):
+    def __init__(self, ConvLayer, block, num_blocks, width_multiplier=1.0, num_classes=200):
         super(ResNet, self).__init__(ConvLayer)
-        self.in_planes = 64
+        nf = int(64 * width_multiplier)
+        self.in_planes = nf
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)  # First convolution non-dynamic
-        self.bn1 = nn.BatchNorm2d(64)
-        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512*block.expansion, num_classes)
+        self.conv1 = nn.Conv2d(3, self.in_planes, kernel_size=3, stride=1, padding=1, bias=False)  # First convolution non-dynamic
+        self.bn1 = nn.BatchNorm2d(self.in_planes)
+        self.layer1 = self._make_layer(block, nf, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, 2 * nf, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, 4 * nf, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, 8 * nf, num_blocks[3], stride=2)
+        self.linear = nn.Linear(8 * nf * block.expansion, num_classes)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
 
     def _make_layer(self, block, planes, num_blocks, stride):
@@ -69,9 +70,9 @@ class ResNet(BaseModel):
         return out
 
 
-def ResNet10(ConvLayer):
-    return ResNet(ConvLayer, BasicBlock, [1, 1, 1, 1])
+def ResNet10(ConvLayer, width_multiplier=1.0):
+    return ResNet(ConvLayer, BasicBlock, [1, 1, 1, 1], width_multiplier)
 
 
-def ResNet18(ConvLayer):
-    return ResNet(ConvLayer, BasicBlock, [2, 2, 2, 2])
+def ResNet18(ConvLayer, width_multiplier=1.0):
+    return ResNet(ConvLayer, BasicBlock, [2, 2, 2, 2], width_multiplier)

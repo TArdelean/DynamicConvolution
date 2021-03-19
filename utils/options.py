@@ -13,6 +13,7 @@ class Options(ParsableOptions):
         self.temperature = (30, 1, 10)  # Temperature parameters: (initial_value, final_value, final_epoch)
         self.experiments = "experiments"
         self.model_class = ""
+        self.model_extra_args = ()  # Model specific arguments (e.g. width multiplier)
         self.dataset_class = ""  # Can also be a function which returns a dataset instance
         self.experiment_name = "attempt"
         self.checkpoint_path = None  # e.g. "experiments/attempt/attempt_4.pth"
@@ -24,6 +25,8 @@ class Options(ParsableOptions):
         self.optimizer_args = (0.001, 0.9)  # e.g. (lr, momentum)
         self.scheduler = "StepLR"
         self.scheduler_args = (30, 0.1)  # e.g. (step_size, gamma) for StepLR
+        self.criterion = "SmoothNLLLoss"
+        self.criterion_args = (0.1,)
         self.device = "cpu"
 
     # noinspection PyAttributeOutsideInit
