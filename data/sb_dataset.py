@@ -19,7 +19,7 @@ def SB_dataset(stage="train", download=True):
                                     CustomRandomHorizontalFlip(),
                                     # NOTE: original repo has args parameter  
                                     # CustomRandomScaleCrop(base_size=args.base_size, crop_size=args.crop_size),
-                                    CustomRandomScaleCrop(base_size=513, crop_size=513),
+                                    CustomRandomScaleCrop(base_size=200, crop_size=200),
                                     CustomRandomGaussianBlur(),
                                     CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                     CustomToTensor(),
@@ -28,7 +28,7 @@ def SB_dataset(stage="train", download=True):
         return datasets.SBDataset('datasets/SBD', image_set='val', 
                                 download=download, mode='segmentation',
                                 transforms=CustomCompose([
-                                    CustomFixScaleCrop(crop_size=513),
+                                    CustomFixScaleCrop(crop_size=200),
                                     CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                     CustomToTensor(),
                                 ]))

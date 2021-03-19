@@ -18,7 +18,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
         voc_train = datasets.VOCSegmentation('datasets/', year='2012', image_set='train', download=download,
                                         transforms=CustomCompose([
                                             CustomRandomHorizontalFlip(),
-                                            CustomRandomScaleCrop(base_size=513, crop_size=513),
+                                            CustomRandomScaleCrop(base_size=200, crop_size=200),
                                             CustomRandomGaussianBlur(),
                                             # NOTE: original repo has args parameter  
                                             # CustomRandomScaleCrop(base_size=args.base_size, crop_size=args.crop_size),
@@ -34,7 +34,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
     else:
         return datasets.VOCSegmentation('datasets/', year='2012', image_set='val', download=download,
                                         transforms=CustomCompose([
-                                            CustomFixScaleCrop(crop_size=513),
+                                            CustomFixScaleCrop(crop_size=200),
                                             CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                                             CustomToTensor(),
                                         ]))
