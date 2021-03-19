@@ -5,7 +5,7 @@
 from torchvision import transforms
 from torchvision import datasets
 
-from sb_dataset import *
+from .sb_dataset import *
 
 import torch
 import random
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     from torch.utils.data import DataLoader
     import matplotlib.pyplot as plt
 
-    voc_train = PascalVOC2012_dataset(stage='train')
+    voc_train = PascalVOC2012_dataset(stage='train', use_sbd_dataset=False, download=False)
     dataloader = DataLoader(voc_train, batch_size=3, shuffle=True, num_workers=0)
     print('Created loader')
     for ii, sample in enumerate(dataloader):
