@@ -13,9 +13,9 @@ import numpy as np
 
 from PIL import Image, ImageOps, ImageFilter
 
-def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
+def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True, root='datasets/'):
     if stage == "train":
-        voc_train = datasets.VOCSegmentation('datasets/', year='2012', image_set='train', download=download,
+        voc_train = datasets.VOCSegmentation(root, year='2012', image_set='train', download=download,
                                         transforms=CustomCompose([
                                             CustomRandomHorizontalFlip(),
                                             CustomRandomScaleCrop(base_size=200, crop_size=200),
@@ -32,7 +32,7 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
         else:
             return voc_train
     else:
-        return datasets.VOCSegmentation('datasets/', year='2012', image_set='val', download=download,
+        return datasets.VOCSegmentation(root, year='2012', image_set='val', download=download,
                                         transforms=CustomCompose([
                                             CustomFixScaleCrop(crop_size=200),
                                             CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
