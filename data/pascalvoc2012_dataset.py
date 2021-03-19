@@ -5,7 +5,7 @@
 from torchvision import transforms
 from torchvision import datasets
 
-from .sb_dataset import *
+from sb_dataset import *
 
 import torch
 import random
@@ -22,8 +22,8 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
                                             CustomRandomGaussianBlur(),
                                             # NOTE: original repo has args parameter  
                                             # CustomRandomScaleCrop(base_size=args.base_size, crop_size=args.crop_size),
-                                            CustomToTensor(),
                                             CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                            CustomToTensor(),
                                         ]))
         if use_sbd_dataset:
             sbd_train = SB_dataset(stage, download=download)
@@ -35,8 +35,8 @@ def PascalVOC2012_dataset(stage="train", use_sbd_dataset=True, download=True):
         return datasets.VOCSegmentation('datasets/', year='2012', image_set='val', download=download,
                                         transforms=CustomCompose([
                                             CustomFixScaleCrop(crop_size=513),
-                                            CustomToTensor(),
                                             CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                                            CustomToTensor(),
                                         ]))
 
 if __name__ == '__main__':

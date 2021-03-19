@@ -134,8 +134,8 @@ class CustomNormalize(object):
         std (tuple): standard deviations for each channel.
     """
     def __init__(self, mean=(0., 0., 0.), std=(1., 1., 1.)):
-        self.mean = mean
-        self.std = std
+        self.mean = np.array(mean)
+        self.std = np.array(std)
 
     def __call__(self, img, mask):
         #img, mask = sample
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     from torch.utils.data import DataLoader
     import matplotlib.pyplot as plt
 
-    sbd_train = SB_dataset(stage='train')
+    sbd_train = SB_dataset(stage='train', download=False)
     print('Created dataset')
     dataloader = DataLoader(sbd_train, batch_size=2, shuffle=True, num_workers=0)
     print('Created loader')
