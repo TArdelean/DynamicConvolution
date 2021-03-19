@@ -25,6 +25,10 @@ class Options(ParsableOptions):
         self.scheduler = "StepLR"
         self.scheduler_args = (30, 0.1)  # e.g. (step_size, gamma) for StepLR
         self.device = "cpu"
+        self.batch_average = False    # normalize training loss by batch size
+        self.is_classification = True # otherwise segmentation
+        self.n_classes = None         # NOTE(alexey-larionov): added for segmentation model and dataset
+        self.config_path = ""
 
     # noinspection PyAttributeOutsideInit
     def proc(self):
