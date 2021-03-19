@@ -10,9 +10,9 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 
-def TinyImageNet_dataset(stage="train"):
+def TinyImageNet_dataset(stage="train", download=True):
     if stage == "train":
-        return TinyImageNetDataset('datasets/', split="train", download=True,
+        return TinyImageNetDataset('datasets/', split="train", download=download,
                                    transform=transforms.Compose([
                                        transforms.RandomAffine(15, None, (0.9, 1.1)),
                                        transforms.RandomResizedCrop(56, scale=(0.25, 1.0)),
@@ -23,7 +23,7 @@ def TinyImageNet_dataset(stage="train"):
                                        normalize,
                                    ]))
     else:
-        return TinyImageNetDataset('datasets/', split="val", download=True,
+        return TinyImageNetDataset('datasets/', split="val", download=download,
                                    transform=transforms.Compose([
                                        transforms.CenterCrop(56),
                                        transforms.ToTensor(),

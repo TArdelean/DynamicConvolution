@@ -11,10 +11,10 @@ import numpy as np
 
 from PIL import Image, ImageOps, ImageFilter
 
-def SB_dataset(stage="train"):
+def SB_dataset(stage="train", download=True):
     if stage == "train":
         return datasets.SBDataset('datasets/SBD', image_set='train_noval',
-                                download=False, mode='segmentation',
+                                download=download, mode='segmentation',
                                 transforms=CustomCompose([
                                     CustomRandomHorizontalFlip(),
                                     # NOTE: original repo has args parameter  
@@ -26,7 +26,7 @@ def SB_dataset(stage="train"):
                                 ]))
     else:
         return datasets.SBDataset('datasets/SBD', image_set='val', 
-                                download=False, mode='segmentation',
+                                download=download, mode='segmentation',
                                 transforms=CustomCompose([
                                     CustomFixScaleCrop(crop_size=513),
                                     CustomNormalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),

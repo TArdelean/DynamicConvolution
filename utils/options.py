@@ -29,7 +29,8 @@ class Options(ParsableOptions):
         self.is_classification = True # otherwise segmentation
         self.n_classes = None         # NOTE(alexey-larionov): added for segmentation model and dataset
         self.config_path = ""
-
+        self.download_dataset = True
+        
     # noinspection PyAttributeOutsideInit
     def proc(self):
         super().proc()

@@ -1,6 +1,7 @@
 model_class: 'DeepLab'
 experiment_name: 'DeepLabV3Plus_baseline'
 dataset_class: 'PascalVOC2012_dataset'
+download_dataset: False
 save_freq: 1
 is_classification: False
 n_classes: 21
