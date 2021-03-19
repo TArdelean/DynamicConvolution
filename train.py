@@ -73,8 +73,6 @@ def test_segmentation(model: nn.Module, temperature: float, loader: torch.utils.
     return mIoU
 
 def main(opt: Options):
-    opt.device = 'cpu'
-    opt.num_workers = 1
     model = models.create_model(opt)
     print("Training with network:")
     print(model)
