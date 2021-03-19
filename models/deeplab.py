@@ -10,6 +10,10 @@ from .deeplab_details.aspp import build_aspp
 from .deeplab_details.decoder import build_decoder
 from .deeplab_details.backbone import build_backbone
 
+#from .. import dynamic_convolutions 
+#from dynamic_convolutions import DynamicConvolution, TempModule
+from models.common import BaseModel, CustomSequential
+
 # DeepLabV3+ model from paper "Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation" (2018)
 # https://paperswithcode.com/paper/encoder-decoder-with-atrous-separable
 
@@ -23,7 +27,7 @@ __all__ = ['DeepLab', 'deeplab']
 class DeepLab(BaseModel):
     def __init__(self, ConvLayer, backbone='resnet', output_stride=16, num_classes=21,
                  sync_bn=True, freeze_bn=False, lr=0.007):
-        super(DeepLab, self).__init__()
+        super().__init__(ConvLayer)
         if backbone == 'drn':
             output_stride = 8
 
@@ -36,7 +40,6 @@ class DeepLab(BaseModel):
         self.aspp = build_aspp(backbone, output_stride, BatchNorm)
         self.decoder = build_decoder(num_classes, backbone, BatchNorm)
         self._lr = lr
-        print('LR', self._lr)
         self.freeze_bn = freeze_bn
 
     def forward(self, input):
