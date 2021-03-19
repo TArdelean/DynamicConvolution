@@ -6,7 +6,8 @@ from torch.utils.tensorboard import SummaryWriter
 import models
 from torch import nn
 import data
-from models.common import TemperatureScheduler
+from models import common
+from models.common import TemperatureScheduler, SmoothNLLLoss
 from utils.options import Options
 from tqdm import tqdm
 
@@ -56,8 +57,8 @@ def main(opt: Options):
 
     train_dl = data.create_data_loader(opt, "train")
     test_dl = data.create_data_loader(opt, "test")
-    criterion = nn.CrossEntropyLoss()
     temperature = TemperatureScheduler(*opt.temperature)
+    criterion = getattr(common, opt.criterion)(*opt.criterion_args)
     optimizer = getattr(torch.optim, opt.optimizer)(model.parameters(), *opt.optimizer_args)
     scheduler = getattr(torch.optim.lr_scheduler, opt.scheduler)(optimizer, *opt.scheduler_args)
     device = torch.device(opt.device)
