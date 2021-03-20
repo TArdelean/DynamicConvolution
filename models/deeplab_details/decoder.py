@@ -19,7 +19,7 @@ class Decoder(TempModule):
         else:
             raise NotImplementedError
 
-        self.conv1 = nn.Conv2d(low_level_inplanes, 48, 1, bias=False)
+        self.conv1 = ConvLayer(low_level_inplanes, 48, 1, bias=False)
         self.bn1 = BatchNorm(48)
         self.relu = nn.ReLU()
         self.last_conv = CustomSequential(ConvLayer(304, 256, kernel_size=3, stride=1, padding=1, bias=False),
@@ -35,7 +35,7 @@ class Decoder(TempModule):
 
 
     def forward(self, x, low_level_feat, temperature):
-        low_level_feat = self.conv1(low_level_feat)
+        low_level_feat = self.conv1(low_level_feat, temperature)
         low_level_feat = self.bn1(low_level_feat)
         low_level_feat = self.relu(low_level_feat)
 

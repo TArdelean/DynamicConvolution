@@ -59,7 +59,7 @@ class CustomSequential(TempModule):
         return x
     
     def __getitem__(self, idx):
-        return self.layers[idx]
+        return CustomSequential(*list(self.layers[idx]))
         # if isinstance(idx, slice):
         #     return self.__class__(OrderedDict(list(self.layers.items())[idx]))
         # else:
