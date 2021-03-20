@@ -58,11 +58,12 @@ class CustomSequential(TempModule):
                 x = layer(x)
         return x
     
-    def __getitem__(self, idx) -> Union['Sequential', T]:
-        if isinstance(idx, slice):
-            return self.__class__(OrderedDict(list(self.layers.items())[idx]))
-        else:
-            return self._get_item_by_idx(self.layers.values(), idx)
+    def __getitem__(self, idx):
+        return self.layers[idx]
+        # if isinstance(idx, slice):
+        #     return self.__class__(OrderedDict(list(self.layers.items())[idx]))
+        # else:
+        #     return self._get_item_by_idx(self.layers.values(), idx)
 
 
 # Implementation inspired from
