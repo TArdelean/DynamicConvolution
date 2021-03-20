@@ -7,7 +7,7 @@ from ..deeplab_details.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 from dynamic_convolutions import DynamicConvolution, TempModule
 from models.common import BaseModel, CustomSequential
 
-class _ASPPModule(nn.Module):
+class _ASPPModule(TempModule):
     def __init__(self, inplanes, planes, kernel_size, padding, dilation, BatchNorm, ConvLayer):
         super(_ASPPModule, self).__init__()
         self.atrous_conv = ConvLayer(inplanes, planes, kernel_size=kernel_size,
@@ -39,7 +39,7 @@ class _ASPPModule(nn.Module):
                 if m.kernels_bias is not None:
                     nn.init.zeros_(m.kernels_bias)
 
-class ASPP(nn.Module):
+class ASPP(TempModule):
     def __init__(self, backbone, output_stride, BatchNorm, ConvLayer):
         super(ASPP, self).__init__()
         if backbone == 'drn':

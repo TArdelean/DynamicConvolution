@@ -25,7 +25,7 @@ def fixed_padding(inputs, kernel_size, dilation):
     return padded_inputs
 
 
-class InvertedResidual(nn.Module):
+class InvertedResidual(TempModule):
     def __init__(self, inp, oup, stride, dilation, expand_ratio, BatchNorm, ConvLayer):
         super(InvertedResidual, self).__init__()
         self.stride = stride
@@ -70,7 +70,7 @@ class InvertedResidual(nn.Module):
         return x
 
 
-class MobileNetV2(nn.Module):
+class MobileNetV2(TempModule):
     def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=False, ConvLayer=nn.Conv2d):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
