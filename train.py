@@ -65,7 +65,7 @@ def test_segmentation(model: nn.Module, temperature: float, loader: torch.utils.
                 output = model(in_data, temperature)
             target = target.cpu().numpy()
             pred = output.cpu().numpy()
-            pred = output.argmax(pred, axis=1)
+            pred = np.argmax(pred, axis=1)
             evaluator.add_batch(target, pred)
     mIoU = evaluator.Mean_Intersection_over_Union()
     #fwIoU = evaluator.Frequency_Weighted_Intersection_over_Union()
