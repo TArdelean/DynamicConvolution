@@ -9,9 +9,9 @@ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 
 
-def Imagenette_dataset(stage="train"):
+def Imagenette_dataset(stage="train", download=True, root='datasets/'):
     if stage == "train":
-        return ImagenetteDataset('datasets/', split="train", download=True,
+        return ImagenetteDataset(root, split="train", download=download,
                                    transform=transforms.Compose([
                                        transforms.RandomAffine(15, None, (0.9, 1.1)),
                                        transforms.RandomResizedCrop(224, scale=(0.25, 1.0)),
@@ -22,7 +22,7 @@ def Imagenette_dataset(stage="train"):
                                        normalize
                                    ]))
     else:
-        return ImagenetteDataset('datasets/', split="val", download=True,
+        return ImagenetteDataset(root, split="val", download=download,
                                    transform=transforms.Compose([
                                        transforms.CenterCrop(224),
                                        transforms.ToTensor(),

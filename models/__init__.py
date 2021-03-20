@@ -6,7 +6,7 @@ from dynamic_convolutions import dynamic_convolution_generator
 from .simple_conv import SimpleConvNet
 from .mobilenetv3 import MobileNetV3
 from .resnet import ResNet10
-
+from .deeplab import DeepLab
 
 def create_model(opt: Options):
     current_module = sys.modules[__name__]
