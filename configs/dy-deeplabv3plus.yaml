@@ -1,11 +1,11 @@
 model_class: 'DeepLab'
-experiment_name: 'DeepLabV3Plus_baseline'
+experiment_name: 'DeepLabV3Plus_dy'
 dataset_class: 'PascalVOC2012_dataset'
 download_dataset: True
 save_freq: 2
 is_classification: False
 n_classes: 21
-use_dynamic : False 
+use_dynamic : True
 max_epoch: 100 
 batch_size: 16
 batch_average: True

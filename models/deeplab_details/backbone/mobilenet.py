@@ -5,9 +5,12 @@ import math
 from ...deeplab_details.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 import torch.utils.model_zoo as model_zoo
 
-def conv_bn(inp, oup, stride, BatchNorm):
+from ....dynamic_convolutions import DynamicConvolution, TempModule
+from ....models.common import BaseModel, CustomSequential
+
+def conv_bn(inp, oup, stride, BatchNorm, ConvLayer=nn.Conv2d):
     return nn.Sequential(
-        nn.Conv2d(inp, oup, 3, stride, 1, bias=False),
+        ConvLayer(inp, oup, 3, stride, 1, bias=False),
         BatchNorm(oup),
         nn.ReLU6(inplace=True)
     )
@@ -23,7 +26,7 @@ def fixed_padding(inputs, kernel_size, dilation):
 
 
 class InvertedResidual(nn.Module):
-    def __init__(self, inp, oup, stride, dilation, expand_ratio, BatchNorm):
+    def __init__(self, inp, oup, stride, dilation, expand_ratio, BatchNorm, ConvLayer):
         super(InvertedResidual, self).__init__()
         self.stride = stride
         assert stride in [1, 2]
@@ -34,27 +37,27 @@ class InvertedResidual(nn.Module):
         self.dilation = dilation
 
         if expand_ratio == 1:
-            self.conv = nn.Sequential(
+            self.conv = CustomSequential(
                 # dw
-                nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 0, dilation, groups=hidden_dim, bias=False),
+                ConvLayer(hidden_dim, hidden_dim, 3, stride, 0, dilation, groups=hidden_dim, bias=False),
                 BatchNorm(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # pw-linear
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, 1, 1, bias=False),
+                ConvLayer(hidden_dim, oup, 1, 1, 0, 1, 1, bias=False),
                 BatchNorm(oup),
             )
         else:
-            self.conv = nn.Sequential(
+            self.conv = CustomSequential(
                 # pw
-                nn.Conv2d(inp, hidden_dim, 1, 1, 0, 1, bias=False),
+                ConvLayer(inp, hidden_dim, 1, 1, 0, 1, bias=False),
                 BatchNorm(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # dw
-                nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 0, dilation, groups=hidden_dim, bias=False),
+                ConvLayer(hidden_dim, hidden_dim, 3, stride, 0, dilation, groups=hidden_dim, bias=False),
                 BatchNorm(hidden_dim),
                 nn.ReLU6(inplace=True),
                 # pw-linear
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, 1, bias=False),
+                ConvLayer(hidden_dim, oup, 1, 1, 0, 1, bias=False),
                 BatchNorm(oup),
             )
 
@@ -68,7 +71,7 @@ class InvertedResidual(nn.Module):
 
 
 class MobileNetV2(nn.Module):
-    def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=True):
+    def __init__(self, output_stride=8, BatchNorm=None, width_mult=1., pretrained=False, ConvLayer=nn.Conv2d):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
         input_channel = 32
@@ -102,11 +105,11 @@ class MobileNetV2(nn.Module):
             output_channel = int(c * width_mult)
             for i in range(n):
                 if i == 0:
-                    self.features.append(block(input_channel, output_channel, stride, dilation, t, BatchNorm))
+                    self.features.append(block(input_channel, output_channel, stride, dilation, t, BatchNorm, ConvLayer))
                 else:
-                    self.features.append(block(input_channel, output_channel, 1, dilation, t, BatchNorm))
+                    self.features.append(block(input_channel, output_channel, 1, dilation, t, BatchNorm, ConvLayer))
                 input_channel = output_channel
-        self.features = nn.Sequential(*self.features)
+        self.features = CustomSequential(*self.features)
         self._initialize_weights()
 
         if pretrained:
@@ -142,6 +145,11 @@ class MobileNetV2(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+            if isinstance(m, DynamicConvolution):
+                for i_kernel in range(m.nof_kernels):
+                    nn.init.kaiming_normal_(m.kernels_weights[i_kernel], mode='fan_out')
+                if m.kernels_bias is not None:
+                    nn.init.zeros_(m.kernels_bias)
 
 if __name__ == "__main__":
     input = torch.rand(1, 3, 512, 512)

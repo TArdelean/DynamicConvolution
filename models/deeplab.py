@@ -10,8 +10,7 @@ from .deeplab_details.aspp import build_aspp
 from .deeplab_details.decoder import build_decoder
 from .deeplab_details.backbone import build_backbone
 
-#from .. import dynamic_convolutions 
-#from dynamic_convolutions import DynamicConvolution, TempModule
+from ..dynamic_convolutions import DynamicConvolution, TempModule
 from models.common import BaseModel, CustomSequential
 
 # DeepLabV3+ model from paper "Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation" (2018)
@@ -36,9 +35,10 @@ class DeepLab(BaseModel):
         else:
             BatchNorm = nn.BatchNorm2d
 
-        self.backbone = build_backbone(backbone, output_stride, BatchNorm)
-        self.aspp = build_aspp(backbone, output_stride, BatchNorm)
-        self.decoder = build_decoder(num_classes, backbone, BatchNorm)
+        self.ConvLayer = ConvLayer
+        self.backbone = build_backbone(backbone, output_stride, BatchNorm, self.ConvLayer)
+        self.aspp = build_aspp(backbone, output_stride, BatchNorm, self.ConvLayer)
+        self.decoder = build_decoder(num_classes, backbone, BatchNorm, self.ConvLayer)
         self._lr = lr
         self.freeze_bn = freeze_bn
 
@@ -62,12 +62,12 @@ class DeepLab(BaseModel):
         for i in range(len(modules)):
             for m in modules[i].named_modules():
                 if self.freeze_bn:
-                    if isinstance(m[1], nn.Conv2d):
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], DynamicConvolution):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm2d) \
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], DynamicConvolution) or isinstance(m[1], SynchronizedBatchNorm2d) \
                             or isinstance(m[1], nn.BatchNorm2d):
                         for p in m[1].parameters():
                             if p.requires_grad:
@@ -78,12 +78,12 @@ class DeepLab(BaseModel):
         for i in range(len(modules)):
             for m in modules[i].named_modules():
                 if self.freeze_bn:
-                    if isinstance(m[1], nn.Conv2d):
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], DynamicConvolution):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm2d) \
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], DynamicConvolution) or isinstance(m[1], SynchronizedBatchNorm2d) \
                             or isinstance(m[1], nn.BatchNorm2d):
                         for p in m[1].parameters():
                             if p.requires_grad:
