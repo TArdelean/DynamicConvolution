@@ -3,6 +3,7 @@ from torch import nn
 from torch.nn import *
 from collections import OrderedDict
 from typing import Any, Iterable, Iterator, Mapping, Optional, TYPE_CHECKING, overload, Tuple, TypeVar, Union
+T = TypeVar('T', bound=Module)
 
 class Conv2dWrapper(nn.Conv2d):
     """
