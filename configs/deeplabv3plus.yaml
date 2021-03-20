@@ -1,17 +1,17 @@
 model_class: 'DeepLab'
-experiment_name: 'DeepLabV3Plus_baseline'
+experiment_name: 'DeepLabV3Plus_baseline_sbd'
 dataset_class: 'PascalVOC2012_dataset'
 download_dataset: False
-save_freq: 1
+save_freq: 2
 is_classification: False
 n_classes: 21
 use_dynamic : False 
-max_epoch: 80 
-batch_size: 10
+max_epoch: 60 
+batch_size: 16
 batch_average: True
 optimizer : "SGD"
 optimizer_args : (0.007, 0.9, 0, 5e-4) 
-scheduler : "StepLR"
-scheduler_args : (15, 0.1)
+scheduler : "CosineAnnealingLR"
+scheduler_args : (60, 0.000001)
 num_workers: 4
 device : "cuda"
