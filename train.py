@@ -8,6 +8,7 @@ from models.common import TemperatureScheduler
 from utils.options import Options
 from utils.segmentation_metrics import SegmentationEvaluator
 import sys
+import numpy as np
 
 from tqdm import tqdm_notebook as tqdm
 
@@ -64,7 +65,7 @@ def test_segmentation(model: nn.Module, temperature: float, loader: torch.utils.
                 output = model(in_data, temperature)
             target = target.cpu().numpy()
             pred = output.cpu().numpy()
-            pred = np.argmax(pred, axis=1)
+            pred = output.argmax(pred, axis=1)
             evaluator.add_batch(target, pred)
     mIoU = evaluator.Mean_Intersection_over_Union()
     #fwIoU = evaluator.Frequency_Weighted_Intersection_over_Union()
