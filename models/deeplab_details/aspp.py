@@ -4,8 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from ..deeplab_details.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
-from ...dynamic_convolutions import DynamicConvolution, TempModule
-from ...models.common import BaseModel, CustomSequential
+from dynamic_convolutions import DynamicConvolution, TempModule
+from models.common import BaseModel, CustomSequential
 
 class _ASPPModule(nn.Module):
     def __init__(self, inplanes, planes, kernel_size, padding, dilation, BatchNorm, ConvLayer):

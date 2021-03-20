@@ -4,8 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from ..deeplab_details.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
-from ...dynamic_convolutions import DynamicConvolution, TempModule
-from ...models.common import BaseModel, CustomSequential
+from dynamic_convolutions import DynamicConvolution, TempModule
+from models.common import BaseModel, CustomSequential
 
 class Decoder(nn.Module):
     def __init__(self, num_classes, backbone, BatchNorm, ConvLayer):

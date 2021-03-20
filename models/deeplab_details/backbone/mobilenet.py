@@ -5,8 +5,8 @@ import math
 from ...deeplab_details.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 import torch.utils.model_zoo as model_zoo
 
-from ....dynamic_convolutions import DynamicConvolution, TempModule
-from ....models.common import BaseModel, CustomSequential
+from dynamic_convolutions import DynamicConvolution, TempModule
+from models.common import BaseModel, CustomSequential
 
 def conv_bn(inp, oup, stride, BatchNorm, ConvLayer=nn.Conv2d):
     return nn.Sequential(

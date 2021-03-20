@@ -10,7 +10,7 @@ from .deeplab_details.aspp import build_aspp
 from .deeplab_details.decoder import build_decoder
 from .deeplab_details.backbone import build_backbone
 
-from ..dynamic_convolutions import DynamicConvolution, TempModule
+from dynamic_convolutions import DynamicConvolution, TempModule
 from models.common import BaseModel, CustomSequential
 
 # DeepLabV3+ model from paper "Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation" (2018)
