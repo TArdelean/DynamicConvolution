@@ -17,8 +17,8 @@ class _ASPPModule(TempModule):
 
         self._init_weight()
 
-    def forward(self, x):
-        x = self.atrous_conv(x)
+    def forward(self, x, temperature):
+        x = self.atrous_conv(x, temperature)
         x = self.bn(x)
 
         return self.relu(x)
@@ -70,16 +70,16 @@ class ASPP(TempModule):
         self.dropout = nn.Dropout(0.5)
         self._init_weight()
 
-    def forward(self, x):
-        x1 = self.aspp1(x)
-        x2 = self.aspp2(x)
-        x3 = self.aspp3(x)
-        x4 = self.aspp4(x)
-        x5 = self.global_avg_pool(x)
+    def forward(self, x, temperature):
+        x1 = self.aspp1(x, temperature)
+        x2 = self.aspp2(x, temperature)
+        x3 = self.aspp3(x, temperature)
+        x4 = self.aspp4(x, temperature)
+        x5 = self.global_avg_pool(x, temperature)
         x5 = F.interpolate(x5, size=x4.size()[2:], mode='bilinear', align_corners=True)
         x = torch.cat((x1, x2, x3, x4, x5), dim=1)
 
-        x = self.conv1(x)
+        x = self.conv1(x, temperature)
         x = self.bn1(x)
         x = self.relu(x)
 

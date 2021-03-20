@@ -61,12 +61,12 @@ class InvertedResidual(TempModule):
                 BatchNorm(oup),
             )
 
-    def forward(self, x):
+    def forward(self, x, temperature):
         x_pad = fixed_padding(x, self.kernel_size, dilation=self.dilation)
         if self.use_res_connect:
-            x = x + self.conv(x_pad)
+            x = x + self.conv(x_pad, temperature)
         else:
-            x = self.conv(x_pad)
+            x = self.conv(x_pad, temperature)
         return x
 
 
@@ -118,9 +118,9 @@ class MobileNetV2(TempModule):
         self.low_level_features = self.features[0:4]
         self.high_level_features = self.features[4:]
 
-    def forward(self, x):
-        low_level_feat = self.low_level_features(x)
-        x = self.high_level_features(low_level_feat)
+    def forward(self, x, temperature):
+        low_level_feat = self.low_level_features(x, temperature)
+        x = self.high_level_features(low_level_feat, temperature)
         return x, low_level_feat
 
     def _load_pretrained_model(self):

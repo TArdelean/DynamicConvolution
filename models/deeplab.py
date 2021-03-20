@@ -43,9 +43,9 @@ class DeepLab(BaseModel):
         self.freeze_bn = freeze_bn
 
     def forward(self, input, temperature):
-        x, low_level_feat = self.backbone(input)
-        x = self.aspp(x)
-        x = self.decoder(x, low_level_feat)
+        x, low_level_feat = self.backbone(input, temperature)
+        x = self.aspp(x, temperature)
+        x = self.decoder(x, low_level_feat, temperature)
         x = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
 
         return x

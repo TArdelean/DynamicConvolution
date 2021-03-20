@@ -34,14 +34,14 @@ class Decoder(TempModule):
         self._init_weight()
 
 
-    def forward(self, x, low_level_feat):
+    def forward(self, x, low_level_feat, temperature):
         low_level_feat = self.conv1(low_level_feat)
         low_level_feat = self.bn1(low_level_feat)
         low_level_feat = self.relu(low_level_feat)
 
         x = F.interpolate(x, size=low_level_feat.size()[2:], mode='bilinear', align_corners=True)
         x = torch.cat((x, low_level_feat), dim=1)
-        x = self.last_conv(x)
+        x = self.last_conv(x, temperature)
 
         return x
 
