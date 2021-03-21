@@ -13,7 +13,7 @@ import numpy as np
 
 from PIL import Image, ImageOps, ImageFilter
 
-def PascalVOC2012_dataset(stage="train", download=True, root='datasets/', use_sbd_dataset=False):
+def PascalVOC2012_dataset(stage="train", use_sbd_dataset=False, download=True, root='datasets/'):
     if stage == "train":
         voc_train = datasets.VOCSegmentation(root, year='2012', image_set='train', download=download,
                                         transforms=CustomCompose([
