@@ -1,3 +1,6 @@
+from collections import Iterable
+import itertools
+
 import torch
 import math
 import torch.nn.functional as F
@@ -81,11 +84,21 @@ class DynamicConvolution(TempModule):
         return out
 
 
-def dynamic_convolution_generator(nof_kernels, reduce):
-    def conv_layer(*args, **kwargs):
-        return DynamicConvolution(nof_kernels, reduce, *args, **kwargs)
+class FlexibleKernelsDynamicConvolution:
+    def __init__(self, Base, nof_kernels, reduce):
+        if isinstance(nof_kernels, Iterable):
+            self.nof_kernels_it = iter(nof_kernels)
+        else:
+            self.nof_kernels_it = itertools.cycle([nof_kernels])
+        self.Base = Base
+        self.reduce = reduce
 
-    return conv_layer
+    def __call__(self, *args, **kwargs):
+        return self.Base(next(self.nof_kernels_it), self.reduce, *args, **kwargs)
+
+
+def dynamic_convolution_generator(nof_kernels, reduce):
+    return FlexibleKernelsDynamicConvolution(DynamicConvolution, nof_kernels, reduce)
 
 
 if __name__ == '__main__':
