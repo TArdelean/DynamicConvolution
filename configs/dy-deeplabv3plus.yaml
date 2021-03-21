@@ -1,0 +1,17 @@
+model_class: 'DeepLab'
+experiment_name: 'DeepLabV3Plus_dy'
+dataset_class: 'PascalVOC2012_dataset'
+download_dataset: True
+save_freq: 2
+is_classification: False
+n_classes: 21
+use_dynamic : True
+max_epoch: 100 
+batch_size: 16
+batch_average: True
+optimizer : "SGD"
+optimizer_args : (0.007, 0.9, 0, 5e-4) 
+scheduler : "CosineAnnealingLR"
+scheduler_args : (100, 0.000001)
+num_workers: 2
+device : "cuda"
