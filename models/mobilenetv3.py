@@ -13,7 +13,7 @@ from models.common import BaseModel, CustomSequential
 
 
 def conv_bn(inp, oup, stride, conv_layer=nn.Conv2d, norm_layer=nn.BatchNorm2d, nlin_layer=nn.ReLU):
-    return nn.Sequential(
+    return CustomSequential(
         conv_layer(inp, oup, 3, stride, 1, bias=False),
         norm_layer(oup),
         nlin_layer(inplace=True)
@@ -21,7 +21,7 @@ def conv_bn(inp, oup, stride, conv_layer=nn.Conv2d, norm_layer=nn.BatchNorm2d, n
 
 
 def conv_1x1_bn(inp, oup, conv_layer=nn.Conv2d, norm_layer=nn.BatchNorm2d, nlin_layer=nn.ReLU):
-    return nn.Sequential(
+    return CustomSequential(
         conv_layer(inp, oup, 1, 1, 0, bias=False),
         norm_layer(oup),
         nlin_layer(inplace=True)
@@ -120,9 +120,9 @@ class MobileBottleneck(TempModule):
             return self.conv(x, temperature)
 
 
-class MobileNetV3(BaseModel):
-    def __init__(self, ConvLayer, n_class=200, input_size=56, dropout=0.2, mode='small', width_mult=1.0, s=1):
-        super(MobileNetV3, self).__init__(ConvLayer)
+class MobileNetV3_(BaseModel):
+    def __init__(self, ConvLayer, n_class=200, dropout=0.2, mode='small', width_multiplier=1.0, s=1):
+        super(MobileNetV3_, self).__init__(ConvLayer)
         input_channel = 16
         last_channel = 1280
         if mode == 'large':
@@ -165,26 +165,27 @@ class MobileNetV3(BaseModel):
             raise NotImplementedError
 
         # building first layer
-        last_channel = make_divisible(last_channel * width_mult) if width_mult > 1.0 else last_channel
+        last_channel = make_divisible(last_channel * width_multiplier) if width_multiplier > 1.0 else last_channel
         self.features = [conv_bn(3, input_channel, s, nlin_layer=Hswish)]
         self.classifier = []
 
         # building mobile blocks
         for k, exp, c, se, nl, s in mobile_setting:
-            output_channel = make_divisible(c * width_mult)
-            exp_channel = make_divisible(exp * width_mult)
-            self.features.append(MobileBottleneck(input_channel, output_channel, k, s, exp_channel, se, nl, self.ConvLayer))
+            output_channel = make_divisible(c * width_multiplier)
+            exp_channel = make_divisible(exp * width_multiplier)
+            self.features.append(
+                MobileBottleneck(input_channel, output_channel, k, s, exp_channel, se, nl, self.ConvLayer))
             input_channel = output_channel
 
         # building last several layers
         if mode == 'large':
-            last_conv = make_divisible(960 * width_mult)
+            last_conv = make_divisible(960 * width_multiplier)
             self.features.append(conv_1x1_bn(input_channel, last_conv, nlin_layer=Hswish, conv_layer=self.ConvLayer))
             self.features.append(nn.AdaptiveAvgPool2d(1))
             self.features.append(self.ConvLayer(last_conv, last_channel, 1, 1, 0))
             self.features.append(Hswish(inplace=True))
         elif mode == 'small':
-            last_conv = make_divisible(576 * width_mult)
+            last_conv = make_divisible(576 * width_multiplier)
             self.features.append(conv_1x1_bn(input_channel, last_conv, nlin_layer=Hswish, conv_layer=self.ConvLayer))
             # self.features.append(SEModule(last_conv))  # refer to paper Table2, but I think this is a mistake
             self.features.append(nn.AdaptiveAvgPool2d(1))
@@ -193,7 +194,7 @@ class MobileNetV3(BaseModel):
         else:
             raise NotImplementedError
 
-        # make it nn.Sequential
+        # make it Sequential
         self.features = CustomSequential(*self.features)
 
         # building classifier
@@ -230,3 +231,7 @@ class MobileNetV3(BaseModel):
                 nn.init.normal_(m.weight, 0, 0.01)
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
+
+
+def MobileNetV3(ConvLayer, width_multiplier=1.0, num_classes=200, stride=1):
+    return MobileNetV3_(ConvLayer, n_class=num_classes, width_multiplier=width_multiplier, s=stride)

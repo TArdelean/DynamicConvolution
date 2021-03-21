@@ -1,13 +1,13 @@
 model_class: 'MobileNetV3'
 dataset_class: 'TinyImageNet_dataset'
 save_freq: 5
-batch_size: 320
+batch_size: 256
 num_workers: 2
 device: 'cuda'
-max_epoch: 300
+max_epoch: 200
 experiment_name: 'MobileNetV3_baseline'
 use_dynamic: False
 scheduler: 'CosineAnnealingLR'
-scheduler_args: (300, 0)
+scheduler_args: (200, 0)
 optimizer: 'SGD'
 optimizer_args: (0.1, 0.9, 0, 3e-5)
