@@ -8,6 +8,6 @@ def build_backbone(backbone, output_stride, BatchNorm, wm=1.0):
     elif backbone == 'drn':
         return drn.drn_d_54(BatchNorm)
     elif backbone == 'mobilenet':
-        return mobilenet.MobileNetV2(output_stride, BatchNorm, width_mult=wm)
+        return mobilenet.MobileNetV2(output_stride, BatchNorm) #  width_mult=wm
     else:
         raise NotImplementedError
