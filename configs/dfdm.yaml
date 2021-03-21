@@ -1,0 +1,13 @@
+model_class: 'ResNet10'
+dataset_class: 'TinyImageNet_dataset'
+save_freq: 5
+batch_size: 600
+num_workers: 2
+device: 'cuda'
+max_epoch: 100
+experiment_name: 'ResNet10_dy'
+use_dynamic: True
+scheduler: 'StepLR'
+scheduler_args: (30, 0.1)
+optimizer: 'SGD'
+optimizer_args: (0.1, 0.9, 0, 4e-5)
