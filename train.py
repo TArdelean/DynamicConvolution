@@ -46,6 +46,7 @@ def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoad
             pred = output.argmax(dim=1, keepdim=True)
             correct += pred.eq(target.view_as(pred)).sum().item()
 
+
     return correct / len(loader.dataset)
 
 
@@ -75,6 +76,6 @@ def main(opt: Options):
 
 if __name__ == '__main__':
 
-    opt = Options(config_file_arg="/home/sayan/Desktop/ml_project/DynamicConvolution/configs/mobilenetv2.yaml", suppress_parse=True)
+    opt = Options(config_file_arg="", suppress_parse=True)
     opt.load_from_file("/home/sayan/Desktop/ml_project/DynamicConvolution/configs/mobilenetv2.yaml").proc()
     main(opt)
