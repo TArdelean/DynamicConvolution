@@ -55,7 +55,7 @@ class ASPP(TempModule):
         else:
             raise NotImplementedError
 
-        inplanes_wm = int(inplanes * wm) 
+        inplanes_wm = inplanes #int(inplanes * wm) 
         planes_wm = int(256 * wm) 
         self.aspp1 = _ASPPModule(inplanes_wm, planes_wm, 1, padding=0, dilation=dilations[0], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
         self.aspp2 = _ASPPModule(inplanes_wm, planes_wm, 3, padding=dilations[1], dilation=dilations[1], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
