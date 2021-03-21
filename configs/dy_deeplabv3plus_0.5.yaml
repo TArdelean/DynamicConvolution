@@ -2,7 +2,7 @@ model_class: 'DeepLab'
 model_extra_args: (0.007, 'mobilenet', 0.5)
 experiment_name: 'deeplabv3plus_dy_0.5'
 dataset_class: 'PascalVOC2012_dataset'
-dataset_extra_args: (True) # use SBD
+dataset_extra_args: (True,) # use SBD
 download_dataset: True
 save_freq: 5
 is_classification: False
