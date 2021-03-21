@@ -34,6 +34,7 @@ class Options(ParsableOptions):
         self.config_path = ""
         self.download_dataset = True
         self.dataset_root = './datasets'
+        self.dataset_extra_args = ()
 
     # noinspection PyAttributeOutsideInit
     def proc(self):

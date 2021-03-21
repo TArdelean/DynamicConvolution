@@ -40,7 +40,7 @@ class _ASPPModule(TempModule):
                     nn.init.zeros_(m.kernels_bias)
 
 class ASPP(TempModule):
-    def __init__(self, backbone, output_stride, BatchNorm, ConvLayer):
+    def __init__(self, backbone, output_stride, BatchNorm, ConvLayer, wm=1.0):
         super(ASPP, self).__init__()
         if backbone == 'drn':
             inplanes = 512
@@ -55,17 +55,19 @@ class ASPP(TempModule):
         else:
             raise NotImplementedError
 
-        self.aspp1 = _ASPPModule(inplanes, 256, 1, padding=0, dilation=dilations[0], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
-        self.aspp2 = _ASPPModule(inplanes, 256, 3, padding=dilations[1], dilation=dilations[1], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
-        self.aspp3 = _ASPPModule(inplanes, 256, 3, padding=dilations[2], dilation=dilations[2], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
-        self.aspp4 = _ASPPModule(inplanes, 256, 3, padding=dilations[3], dilation=dilations[3], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
+        inplanes_wm = int(inplanes * wm) 
+        planes_wm = int(256 * wm) 
+        self.aspp1 = _ASPPModule(inplanes_wm, planes_wm, 1, padding=0, dilation=dilations[0], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
+        self.aspp2 = _ASPPModule(inplanes_wm, planes_wm, 3, padding=dilations[1], dilation=dilations[1], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
+        self.aspp3 = _ASPPModule(inplanes_wm, planes_wm, 3, padding=dilations[2], dilation=dilations[2], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
+        self.aspp4 = _ASPPModule(inplanes_wm, planes_wm, 3, padding=dilations[3], dilation=dilations[3], BatchNorm=BatchNorm, ConvLayer=ConvLayer)
 
         self.global_avg_pool = CustomSequential(nn.AdaptiveAvgPool2d((1, 1)),
-                                             ConvLayer(inplanes, 256, 1, stride=1, bias=False),
-                                             BatchNorm(256),
+                                             ConvLayer(inplanes_wm, int(256*wm), 1, stride=1, bias=False),
+                                             BatchNorm(int(256*wm)),
                                              nn.ReLU())
-        self.conv1 = ConvLayer(1280, 256, 1, bias=False)
-        self.bn1 = BatchNorm(256)
+        self.conv1 = ConvLayer(int(1280 * wm), int(256 * wm), 1, bias=False)
+        self.bn1 = BatchNorm(int(256 * wm))
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.5)
         self._init_weight()
@@ -104,5 +106,5 @@ class ASPP(TempModule):
                     nn.init.zeros_(m.kernels_bias)
 
 
-def build_aspp(backbone, output_stride, BatchNorm, ConvLayer):
-    return ASPP(backbone, output_stride, BatchNorm, ConvLayer)
+def build_aspp(backbone, output_stride, BatchNorm, ConvLayer, wm=1.0):
+    return ASPP(backbone, output_stride, BatchNorm, ConvLayer, wm=wm)

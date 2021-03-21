@@ -1,12 +1,12 @@
 model_class: 'DeepLab'
 model_extra_args: (0.007, 'mobilenet')
-experiment_name: 'deeplabv3plus_baseline'
+experiment_name: 'deeplabv3plus_dy'
 dataset_class: 'PascalVOC2012_dataset'
 download_dataset: True
 save_freq: 5
 is_classification: False
 n_classes: 21
-use_dynamic : False 
+use_dynamic : True
 max_epoch: 100 
 batch_size: 16
 batch_average: True

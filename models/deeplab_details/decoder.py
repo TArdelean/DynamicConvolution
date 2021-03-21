@@ -8,7 +8,7 @@ from dynamic_convolutions import DynamicConvolution, TempModule
 from models.common import BaseModel, CustomSequential
 
 class Decoder(TempModule):
-    def __init__(self, num_classes, backbone, BatchNorm, ConvLayer):
+    def __init__(self, num_classes, backbone, BatchNorm, ConvLayer, wm=1.0):
         super(Decoder, self).__init__()
         if backbone == 'resnet' or backbone == 'drn':
             low_level_inplanes = 256
@@ -21,16 +21,18 @@ class Decoder(TempModule):
 
         self.conv1 = ConvLayer(low_level_inplanes, 48, 1, bias=False)
         self.bn1 = BatchNorm(48)
+        # self.conv1 = ConvLayer(int(low_level_inplanes*wm), int(48*wm), 1, bias=False)
+        # self.bn1 = BatchNorm(int(48*wm))
         self.relu = nn.ReLU()
-        self.last_conv = CustomSequential(ConvLayer(304, 256, kernel_size=3, stride=1, padding=1, bias=False),
-                                       BatchNorm(256),
+        self.last_conv = CustomSequential(ConvLayer(int(304*wm), int(256*wm), kernel_size=3, stride=1, padding=1, bias=False),
+                                       BatchNorm(int(256*wm)),
                                        nn.ReLU(),
                                        nn.Dropout(0.5),
-                                       ConvLayer(256, 256, kernel_size=3, stride=1, padding=1, bias=False),
-                                       BatchNorm(256),
+                                       ConvLayer(int(256*wm), int(256*wm), kernel_size=3, stride=1, padding=1, bias=False),
+                                       BatchNorm(int(256*wm)),
                                        nn.ReLU(),
                                        nn.Dropout(0.1),
-                                       ConvLayer(256, num_classes, kernel_size=1, stride=1))
+                                       ConvLayer(int(256*wm), num_classes, kernel_size=1, stride=1))
         self._init_weight()
 
 
@@ -61,5 +63,5 @@ class Decoder(TempModule):
                 if m.kernels_bias is not None:
                     nn.init.zeros_(m.kernels_bias)
 
-def build_decoder(num_classes, backbone, BatchNorm, ConvLayer):
-    return Decoder(num_classes, backbone, BatchNorm, ConvLayer)
+def build_decoder(num_classes, backbone, BatchNorm, ConvLayer, wm=1.0):
+    return Decoder(num_classes, backbone, BatchNorm, ConvLayer, wm=wm)

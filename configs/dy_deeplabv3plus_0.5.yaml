@@ -1,8 +1,10 @@
 model_class: 'DeepLab'
-experiment_name: 'DeepLabV3Plus_dy'
+model_extra_args: (0.007, 'mobilenet', 0.5)
+experiment_name: 'deeplabv3plus_dy_0.5'
 dataset_class: 'PascalVOC2012_dataset'
+dataset_extra_args: (True) # use SBD
 download_dataset: True
-save_freq: 2
+save_freq: 5
 is_classification: False
 n_classes: 21
 use_dynamic : True

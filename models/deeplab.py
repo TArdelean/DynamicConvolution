@@ -24,8 +24,8 @@ from models.common import BaseModel, CustomSequential
 __all__ = ['DeepLab', 'deeplab']
 
 class DeepLab(BaseModel):
-    def __init__(self, ConvLayer, backbone='mobilenet', output_stride=16, num_classes=21,
-                 sync_bn=True, freeze_bn=False, lr=0.007):
+    def __init__(self, ConvLayer, lr=0.007, backbone='resnet', wm=1.0, output_stride=16, num_classes=21,
+                 sync_bn=True, freeze_bn=False):
         super().__init__(ConvLayer)
         if backbone == 'drn':
             output_stride = 8
@@ -35,10 +35,10 @@ class DeepLab(BaseModel):
         else:
             BatchNorm = nn.BatchNorm2d
 
-        self.backbone = build_backbone(backbone, output_stride, BatchNorm)
-        self.aspp = build_aspp(backbone, output_stride, BatchNorm, ConvLayer)
-        self.decoder = build_decoder(num_classes, backbone, BatchNorm, ConvLayer)
-        self._lr = lr
+        self.backbone = build_backbone(backbone, output_stride, BatchNorm, wm=wm)
+        self.aspp = build_aspp(backbone, output_stride, BatchNorm, ConvLayer, wm=wm)
+        self.decoder = build_decoder(num_classes, backbone, BatchNorm, ConvLayer, wm=wm)
+        self.lr = lr
         self.freeze_bn = freeze_bn
 
     def forward(self, input, temperature):
@@ -88,8 +88,8 @@ class DeepLab(BaseModel):
                             if p.requires_grad:
                                 yield p
     def parameters(self):
-        return [{'params': self.get_1x_lr_params(), 'lr': self._lr},
-                {'params': self.get_10x_lr_params(), 'lr': self._lr * 10}]
+        return [{'params': self.get_1x_lr_params(), 'lr': self.lr},
+                {'params': self.get_10x_lr_params(), 'lr': self.lr * 10}]
                 
 if __name__ == "__main__":
     model = DeepLab(backbone='mobilenet', output_stride=16)
