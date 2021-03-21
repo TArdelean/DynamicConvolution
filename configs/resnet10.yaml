@@ -1,0 +1,13 @@
+- batch_size: 600
+  dataset_class: gardener
+  device: cuda
+  experiment_name: ResNet10_dy
+  max_epoch: 100
+  model_class: ResNet10
+  num_workers: 2
+  optimizer: SGD
+  optimizer_args: !!python/tuple [0.1, 0.9, 0, 4.0e-05]
+  save_freq: 5
+  scheduler: StepLR
+  scheduler_args: !!python/tuple [30, 0.1]
+  use_dynamic: true
