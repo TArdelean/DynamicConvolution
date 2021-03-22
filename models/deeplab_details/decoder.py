@@ -19,8 +19,8 @@ class Decoder(TempModule):
         else:
             raise NotImplementedError
 
-        self.conv1 = ConvLayer(low_level_inplanes, 48, 1, bias=False)
-        self.bn1 = BatchNorm(48)
+        self.conv1 = ConvLayer(low_level_inplanes, int(48*wm), 1, bias=False)
+        self.bn1 = BatchNorm(int(48*wm))
         # self.conv1 = ConvLayer(int(low_level_inplanes*wm), int(48*wm), 1, bias=False)
         # self.bn1 = BatchNorm(int(48*wm))
         self.relu = nn.ReLU()
