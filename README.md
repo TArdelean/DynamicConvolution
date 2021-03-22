@@ -27,12 +27,23 @@ Source code of the Project for the Machine Learning course at Skoltech 2021.
 #### Brief repository overview
 
 Project structure:
-* `configs/` -
-* `data/` -
-* `datasets/` - created by default to store downloaded and extracted datasets (can be configured to be stored somewhere else)
-* `experiments/` - created by default to store checkpoints and `tensorboard` logs of different training experiments (can be configured to be stored somewhere else)
-* `models/` - contains all models that we tried to train using Dynamic Convolutions, models derive from `BaseModel` class which allows to construct models with a custom convolutional layers (either `nn.Conv2d` or out `DynamicConvolution`), models' sub modules derive from `TempModule` class, which allows pass a `temperature` argument to `forward()` method 
-    * `models/deeplab_details` - contains code primarily originated from [DeepLabV3+](https://github.com/jfzhang95/pytorch-deeplab-xception) project (their backbones setups and model architecture details). We enhance those details (not backbones) it with possibility to apply Dynamic Convolutions and a width multiplier on convolutional layers
+* `configs/` - configuration files that allow to launch script `train.py` to train different combinations of models/datasets/optimizers/schedulers and their parameters
+* `data/` - classes for downloading and setting up different datasets:
+   * `imagenette_dataset.py` - Imagenette dataset, which is a small ImageNet subset of 10 classes. [Download link](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz)
+   * `tinyimagenet_dataset.py` - Tiny ImageNet dataset,  which is a small ImageNet subset of 200 classes with 600 images per class. [Download link](http://cs231n.stanford.edu/tiny-imagenet-200.zip)
+   * `pascalvoc2012_dataset.py` - Pascal VOC 2012 segmentation dataset, used to train and evaluate DeepLabV3+ model. [Official page](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/)
+   * `sb_dataset.py` - Semantic Boundaries dataset for segmentation, DeepLabV3+ originally is trained on samples from here together with samples from Pascal VOC 2012. [Official page](http://home.bharathh.info/pubs/codes/SBD/download.html)
+   * `mnist_dataset.py` - MNIST dataset, provided to test correctness of installation with a trivial classification CNN
+* `datasets/` - may be created by default to store downloaded and extracted datasets (can be configured to be stored somewhere else)
+* `experiments/` - may be created by default to store checkpoints and `tensorboard` logs of different training experiments (can be configured to be stored somewhere else)
+* `models/` - contains all models source code that we tried to train using Dynamic Convolutions, models derive from `BaseModel` class which allows to construct models with a custom convolutional layers (either `nn.Conv2d` or out `DynamicConvolution`), models' sub modules derive from `TempModule` class, which allows pass a `temperature` argument to `forward()` method 
+   * `common.py`
+   * `deeplab.py` - [DeepLabV3+](https://github.com/jfzhang95/pytorch-deeplab-xception)
+   * `deeplab_details/` - folder contains code from [DeepLabV3+ repository](https://github.com/jfzhang95/pytorch-deeplab-xception) project (their backbones setups and model architecture details).
+   * `mobilenetv3.py` - MobileNetV3
+   * `mobilenetv2.py` - MobileNetV2
+   * `resnet.py` - general ResNet, ResNet10 and ResNet18
+   * `simple_conv.py` - a trivial classification CNN provided to test correctness of installation 
 * `notebooks/` -
 * `utils/` -
 * `dynamic_convolutions.py` -
