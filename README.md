@@ -26,27 +26,40 @@ Source code of the Project for the Machine Learning course at Skoltech 2021.
 * `datasets/` -default storage of downloaded and extracted datasets (can be configured to be stored somewhere else)
 * `experiments/` - default storage of checkpoints and `tensorboard` logs of experiments (can be configured to be stored somewhere else)
 * `models/` - different models' source code on which we apply Dynamic Convolutions
-   * `common.py` - base classes that allow integration of Dynamic Convolutions into existing models. Models derive from `BaseModel` class which allows to construct a model with a custom convolutional layer class (either `nn.Conv2d` or out `DynamicConvolution`), submodules inside models derive from `TempModule` class, which allows pass a `temperature` argument to `forward()` method 
+   * `common.py` - base classes that allow integration of Dynamic Convolutions into existing models. Models derive from `BaseModel` class which allows to construct a model with a custom convolutional layer class (either `nn.Conv2d` or our `DynamicConvolution`), submodules inside models derive from `TempModule` class, which allows pass a `temperature` argument to `forward()` method 
    * `deeplab.py` and `deeplab_details/` folder - [DeepLabV3+](https://github.com/jfzhang95/pytorch-deeplab-xception)
    * `mobilenetv3.py` - MobileNetV3
    * `mobilenetv2.py` - MobileNetV2
    * `resnet.py` - general ResNet, ResNet10 and ResNet18
    * `simple_conv.py` - a trivial classification CNN provided to test correctness of installation 
-* `notebooks/` - 🔴 TODO: which notebooks do we publish?
+* `notebooks/` - check out section [below](#notebooks)
 * `utils/` - framework auxiliary code for parsing options from configuration files and command line, loading and storing of checkpoints, custom metrics, losses
 * 👉`dynamic_convolutions.py` - implementation of `DynamicConvolution` class, i.e. a drop-in replacement for `nn.Conv2d` with learnable per-sample attention
 * `inspect_attention.py` - methods to extract and analyze Dynamic Convolution state in trained models 
 * 👉 `train.py` - entry point for training of models, using a configuration file (or other options, see **Reproduce training** section)
 
-### Prerequisite Python packages:
-* `torch`, `torchvision`, `tqdm`, `tensorboard`, `pillow`, `numpy`
 
-### Reproduce training
-The most basic way is to enter the root of the project and execute the following in a console:
+### Requirements 
+A GPU is recommended to perform the experiments. 
+The code is set up to be effortlessly run using [Google Colab](colab.research.google.com). 
+Main prerequisites are:
+
+- [`pytorch`](http://pytorch.org/), [`torchvision`](https://github.com/pytorch/vision)
+- `numpy`, `tensorboard`, `pillow`, `tqdm`
+
+For convenience, a ready to use conda [environment](environment.yml) is provided. 
+To create a new python environment with all the required packages, you can run:
+```shell
+conda env create -f environment.yaml
+conda activate dyconv
 ```
+
+### Training setup 
+The training process can be started with the provided script:
+```shell
 python train.py --config_path "configs/<name>.yaml"
 ```
-where `<name>.yaml` refers to a filename among those lying in `configs/` folder. There you can find different setups of training, namely:
+where `<name>.yaml` refers to a configuration file ([`configs/`](configs)) facilitating experiment reproducibility. Among the available training setups there are: 
 * 🔴 TODO: other configs
 * `mobilenetv3.yaml` - baseline of MobileNetV3 🔴 TODO: elaborate?
 * `mobilenetv2.yaml` - baseline of MobileNetV2 🔴 TODO: elaborate?
@@ -56,22 +69,45 @@ where `<name>.yaml` refers to a filename among those lying in `configs/` folder.
 * `dy_deeplabv3plus_0.5.yaml` - Dynamic Convolution version of DeepLabV3+ with MobileNetV2 backbone and x0.5 width convolutions, trained on a combination of Pascal VOC 2012 and Semantic Boundaries datasets
 * `config.yaml` - toy example of classifying MNIST digits with a trivial CNN, provided to test correctness of installation
 
-Besides providing the config file, you can also pass options as command line arguments, which will override those used in the config. For the full list of available (and default) options refer to `utils/options.py` file. 
-```
+Besides providing the config file, you can also pass options as command line arguments, which will override those used in the config. For the full list of available (and default) options refer to [`utils/options.py`](utils/options.py) file. 
+```shell
 python train.py --config_path "configs/<name>.yaml" --device "cpu" --batch_size 100
 ```
-Alternatively you can look over `notebooks/` directory where we have Jupyter notebooks with ability to do either afomementioned traning from a config on Google Colab, or adjust some training parameters for custom training. 
 
-### Checkpoints 🔴 TODO: maybe delete
+TensorBoard facilitates tracking the training process and comparing experiments:
+```shell
+tensorboard --logdir experiments
+```
 
-### Some experimental results 🔴 TODO: fill in (required)
+### Notebooks
 
-1. MobileNetV3 ... 
-2. MobileNetV2 ... 
-3. ResNet
-4. Segmentation DeepLabV3+, width 1.0, only Pascal VOC 2012 training set
-* `deeplabv3plus.yaml` - 100 epochs, number of parameters `5.81M`, 6.5 hours to train, best mIoU score `61.33`, training stagnated on this score since epoch #60
-* `dy_deeplabv3plus.yaml` - 100 epochs, number of parameters `18.4M`, 5 hours to train, best mIoU score `61.21`, both models converged to the same score, loss curves over course of training look identical
-5. Segmentation DeepLabV3+, width 0.5, Pascal VOC 2012 + SBD datasets for training, validation on Pascal VOC 2012
-* `deeplabv3plus_0.5.yaml` - 100 epochs, number of parameters `___M`, __ hours to train,  best mIoU score `__.__`,
-* `dy_deeplabv3plus_0.5.yaml` - 100 epochs, number of parameters `___M`, 17 hours to train, best mIoU score `__.__`, still makes progress in test score about 1% per 20 epochs (but experiment was capped to 100 epoch due to inconvenience of long training on Google Colab)
+The following Google Colab compatible Jupyter notebooks are available:
+- [`notebooks/DyConv_training.ipynb`](notebooks/DyConv_training.ipynb) - Self-explanatory training procedure
+
+### Experimental results
+
+#### Classification
+
+- Dataset: Tiny ImageNet
+
+  | Network | Number of parameters |  Accuracy  | Config file | 
+  | :---    |         :---:        |    :---:   |    :---:    |
+  |   |      |  | |
+  |   |      |  | |
+
+#### Segmentation
+
+- Dataset: Pascal VOC 2012
+
+  | Network             | Number of parameters  |  mIoU   | Config file | 
+  | :---                |         :---:         |   :---: |    :---:    |
+  | DeepLabV3+          |         5.81M         |  61.33  | `deeplabv3plus.yaml`|
+  | DY-DeepLabV3+       |         18.4M         |  61.21  | `dy_deeplabv3plus.yaml`|
+
+
+- Dataset: Pascal VOC 2012 + SBD (only used for training)
+  
+  | Network             | Number of parameters  |  mIoU  | Config file | 
+  | :---                |         :---:         |  :---: |    :---:    |
+  | DeepLabV3+ x 0.5    |      |  | `deeplabv3plus_0.5.yaml` |
+  | DY-DeepLabV3+ x 0.5 |      |  | `dy_deeplabv3plus_0.5.yaml` |
