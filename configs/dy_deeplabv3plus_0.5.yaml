@@ -7,7 +7,10 @@ download_dataset: True
 save_freq: 5
 is_classification: False
 n_classes: 21
-use_dynamic : True
+use_dynamic: True
+nof_kernels: 4  
+reduce: 4 
+temperature: (30, 1, 10)
 max_epoch: 100 
 batch_size: 16
 batch_average: True
