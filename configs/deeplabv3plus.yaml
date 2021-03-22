@@ -10,10 +10,11 @@ n_classes: 21
 use_dynamic : False 
 max_epoch: 100 
 batch_size: 16
-batch_average: True
 optimizer : "SGD"
 optimizer_args : (0.007, 0.9, 0, 5e-4) 
 scheduler : "CosineAnnealingLR"
 scheduler_args : (100, 0.000001)
+criterion: "CrossEntropyLoss"
+criterion_args: (None, True, 255)
 num_workers: 2
 device : "cuda"

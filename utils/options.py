@@ -28,7 +28,6 @@ class Options(ParsableOptions):
         self.criterion = "SmoothNLLLoss"
         self.criterion_args = (0.1,)
         self.device = "cpu"
-        self.batch_average = False    # normalize training loss by batch size
         self.is_classification = True # otherwise segmentation
         self.n_classes = None         # NOTE(alexey-larionov): added for segmentation model and dataset
         self.config_path = ""
