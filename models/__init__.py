@@ -5,6 +5,7 @@ from .common import Conv2dWrapper
 from dynamic_convolutions import dynamic_convolution_generator
 from .simple_conv import SimpleConvNet
 from .mobilenetv3 import MobileNetV3
+from .mobilenetv2 import MobileNetV2
 from .resnet import ResNet10
 
 

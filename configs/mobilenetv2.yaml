@@ -1,0 +1,16 @@
+model_class: 'MobileNetV2'
+dataset_class: 'TinyImageNet_dataset'
+save_freq: 5
+batch_size: 600
+num_workers: 4
+device: 'cuda'
+max_epoch: 300
+experiment_name: 'MobileNetV2_035_dy_tiny_t10040_300ep'
+use_dynamic: True
+temperature: (100, 1, 40)
+criterion: 'CrossEntropyLoss'
+criterion_args: ''
+scheduler: 'CosineAnnealingLR'
+scheduler_args: (300, 0)
+optimizer: 'SGD'
+optimizer_args: (0.05, 0.9, 0, 4e-5) #(lr, momentum, dampening, weight decay)

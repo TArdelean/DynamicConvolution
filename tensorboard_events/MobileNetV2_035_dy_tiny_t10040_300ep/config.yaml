@@ -1,0 +1,23 @@
+: ''
+use_dynamic: True
+nof_kernels: 4
+reduce: 4
+temperature: (100, 1, 40)
+experiments: 'experiments'
+model_class: 'MobileNetV2'
+model_extra_args: ()
+dataset_class: 'TinyImageNet_dataset'
+experiment_name: 'MobileNetV2_035_dy_tiny_t10040_300ep'
+checkpoint_path: None
+max_epoch: 300
+save_freq: 5
+batch_size: 600
+num_workers: 4
+optimizer: 'SGD'
+optimizer_args: (0.05, 0.9, 0, 4e-05)
+scheduler: 'CosineAnnealingLR'
+scheduler_args: (300, 0)
+criterion: 'CrossEntropyLoss'
+criterion_args: ''
+device: 'cuda'
+checkpoints_dir: 'experiments/MobileNetV2_035_dy_tiny_t10040_300ep'
