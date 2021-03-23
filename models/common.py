@@ -1,7 +1,9 @@
 import torch
 from torch import nn
 from torch.nn import *
-
+from collections import OrderedDict
+from typing import Any, Iterable, Iterator, Mapping, Optional, TYPE_CHECKING, overload, Tuple, TypeVar, Union
+T = TypeVar('T', bound=Module)
 
 class Conv2dWrapper(nn.Conv2d):
     """
@@ -55,6 +57,13 @@ class CustomSequential(TempModule):
             else:
                 x = layer(x)
         return x
+    
+    def __getitem__(self, idx):
+        return CustomSequential(*list(self.layers[idx]))
+        # if isinstance(idx, slice):
+        #     return self.__class__(OrderedDict(list(self.layers.items())[idx]))
+        # else:
+        #     return self._get_item_by_idx(self.layers.values(), idx)
 
 
 # Implementation inspired from

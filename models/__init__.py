@@ -7,7 +7,7 @@ from .simple_conv import SimpleConvNet
 from .mobilenetv3 import MobileNetV3
 from .mobilenetv2 import MobileNetV2
 from .resnet import ResNet10
-
+from .deeplab import DeepLab
 
 def create_model(opt: Options):
     current_module = sys.modules[__name__]

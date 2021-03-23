@@ -7,7 +7,12 @@ import data
 from models import common
 from models.common import TemperatureScheduler, SmoothNLLLoss
 from utils.options import Options
-from tqdm import tqdm
+from utils.segmentation_metrics import SegmentationEvaluator
+import sys
+import numpy as np
+from functools import partial
+
+from tqdm import tqdm_notebook as tqdm
 
 from utils.utils import load_checkpoint, save_checkpoint
 
@@ -33,7 +38,8 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module, temperature:
             writer.add_scalar("Loss/train", loss.item(), iteration)
 
 
-def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoader, device: torch.device):
+# classification accuracy validation score
+def test_accuracy(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoader, device: torch.device):
     model.eval()
     correct = 0
     with torch.no_grad():
@@ -47,6 +53,25 @@ def test(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoad
 
     return correct / len(loader.dataset)
 
+# segmentation validation scores
+def test_segmentation(model: nn.Module, temperature: float, loader: torch.utils.data.DataLoader, device: torch.device, n_classes: int):
+    model.eval()
+    evaluator = SegmentationEvaluator(n_classes)
+    with torch.no_grad():
+        for batch in loader:
+            in_data, target = batch
+            in_data, target = in_data.to(device), target.to(device)
+            with torch.no_grad():
+                output = model(in_data, temperature)
+            target = target.cpu().numpy()
+            pred = output.cpu().numpy()
+            pred = np.argmax(pred, axis=1)
+            evaluator.add_batch(target, pred)
+    mIoU = evaluator.Mean_Intersection_over_Union()
+    #fwIoU = evaluator.Frequency_Weighted_Intersection_over_Union()
+    #px_accuracy = evaluator.Pixel_Accuracy()
+    #px_accuracy_class = evaluator.Pixel_Accuracy_Class()
+    return mIoU
 
 def main(opt: Options):
     model = models.create_model(opt)
@@ -56,18 +81,27 @@ def main(opt: Options):
 
     train_dl = data.create_data_loader(opt, "train")
     test_dl = data.create_data_loader(opt, "test")
-    temperature = TemperatureScheduler(*opt.temperature)
     criterion = getattr(common, opt.criterion)(*opt.criterion_args)
+    temperature = TemperatureScheduler(*opt.temperature)
     optimizer = getattr(torch.optim, opt.optimizer)(model.parameters(), *opt.optimizer_args)
     scheduler = getattr(torch.optim.lr_scheduler, opt.scheduler)(optimizer, *opt.scheduler_args)
     device = torch.device(opt.device)
     model, epoch, optimizer, scheduler = load_checkpoint(opt.checkpoint_path, model, optimizer, scheduler, device)
+
+    if opt.is_classification:
+        test_metric = test_accuracy
+        metric_name = 'Accuracy'
+    else: # segmentation
+        test_metric = partial(test_segmentation, n_classes=opt.n_classes)
+        metric_name = 'mIoU'
+
+    print('Setting up complete, starting training')
     for ep in range(epoch + 1, opt.max_epoch+1):
         train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer)
-        test_score = test(model, temperature.get(ep), test_dl, device)
+        test_score = test_metric(model, temperature.get(ep), test_dl, device)
+        writer.add_scalar(f"{metric_name}/test", test_score, ep * len(test_dl.dataset))
+        print(f"Test {metric_name} after {ep} epochs = {test_score}")
         scheduler.step()
-        writer.add_scalar("Accuracy/test", test_score, ep * len(test_dl.dataset))
-        print(f"Test accuracy after {ep} epochs = {test_score}")
         if ep % opt.save_freq == 0:
             save_checkpoint(model, optimizer, scheduler, ep, opt)
 

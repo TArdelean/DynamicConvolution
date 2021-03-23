@@ -1,0 +1,20 @@
+model_class: 'DeepLab'
+model_extra_args: (0.007, 'mobilenet', 0.5)
+experiment_name: 'deeplabv3plus_baseline_0.5'
+dataset_class: 'PascalVOC2012_dataset'
+dataset_extra_args: (True,) # use SBD
+download_dataset: True
+save_freq: 5
+is_classification: False
+n_classes: 21
+use_dynamic : False 
+max_epoch: 100 
+batch_size: 16
+optimizer : "SGD"
+optimizer_args : (0.007, 0.9, 0, 5e-4) 
+scheduler : "CosineAnnealingLR"
+scheduler_args : (100, 0.000001)
+criterion: "CrossEntropyLoss"
+criterion_args: (None, True, 255)
+num_workers: 2
+device : "cuda"

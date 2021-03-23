@@ -7,10 +7,10 @@ transform = transforms.Compose([
 ])
 
 
-def MNIST_dataset(stage="train"):
+def MNIST_dataset(stage="train", download=True, root='datasets/'):
     if stage == "train":
-        return datasets.MNIST('datasets/', train=True, download=True,
+        return datasets.MNIST(root, train=True, download=download,
                               transform=transform)
     else:
-        return datasets.MNIST('datasets/', train=False,
+        return datasets.MNIST(root, train=False, download=download,
                               transform=transform)
