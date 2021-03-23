@@ -85,6 +85,7 @@ The following Google Colab compatible Jupyter notebooks are available:
 - [`notebooks/DyConv_training.ipynb`](notebooks/DyConv_training.ipynb) - Self-explanatory training procedure
 - [`notebooks/DyConv_profiling.ipynb`](notebooks/DyConv_profiling.ipynb) - Profile number of parameters, FLOPS and inference time
 - [`notebooks/DyConv_inspect.ipynb`](notebooks/DyConv_inspect.ipynb) - Inspect the distribution of attentions computed by Dynamic Convolutions
+- [`notebooks/DyConv_inspect_segmentation.ipynb`](notebooks/DyConv_inspect_segmentation.ipynb) - Inspect learning progress and statistics of segmentation models training (DeepLabV3+)
 
 ### Experimental results
 
