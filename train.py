@@ -12,7 +12,7 @@ import sys
 import numpy as np
 from functools import partial
 
-from tqdm import tqdm_notebook as tqdm
+from tqdm import tqdm
 
 from utils.utils import load_checkpoint, save_checkpoint
 
