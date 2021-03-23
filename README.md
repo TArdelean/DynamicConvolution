@@ -60,13 +60,11 @@ The training process can be started with the provided script:
 python train.py --config_path "configs/<name>.yaml"
 ```
 where `<name>.yaml` refers to a configuration file ([`configs/`](configs)) facilitating experiment reproducibility. Among the available training setups there are: 
-* 🔴 TODO: other configs
-* `mobilenetv3.yaml` - baseline of MobileNetV3 🔴 TODO: elaborate?
-* `mobilenetv2.yaml` - baseline of MobileNetV2 🔴 TODO: elaborate?
-* `deeplabv3plus.yaml` - baseline of DeepLabV3+ with MobileNetV2 backbone trained on Pascal VOC 2012 dataset
-* `dy_deeplabv3plus.yaml` - Dynamic Convolution version of DeepLabV3+ with MobileNetV2 backbone trained on Pascal VOC 2012 dataset
-* `deeplabv3plus_0.5.yaml` - baseline of DeepLabV3+ with MobileNetV2 backbone and x0.5 width convolutions, trained on a combination of Pascal VOC 2012 and Semantic Boundaries datasets
-* `dy_deeplabv3plus_0.5.yaml` - Dynamic Convolution version of DeepLabV3+ with MobileNetV2 backbone and x0.5 width convolutions, trained on a combination of Pascal VOC 2012 and Semantic Boundaries datasets
+* `mobilenetv3.yaml` - baseline of MobileNetV3
+* `mobilenetv2.yaml` - baseline of MobileNetV2 
+* `deeplabv3plus.yaml`, `dy_deeplabv3plus.yaml` - DeepLabV3+ with MobileNetV2 backbone trained on Pascal VOC 2012 dataset
+* `deeplabv3plus_0.5.yaml`, `dy_deeplabv3plus_0.5.yaml` - baseline of DeepLabV3+ with MobileNetV2 backbone and x0.5 width convolutions, trained on a combination of Pascal VOC 2012 and Semantic Boundaries datasets
+* `Resnet_[type]_[width]` - various setups of ResNet architecture
 * `config.yaml` - toy example of classifying MNIST digits with a trivial CNN, provided to test correctness of installation
 
 Besides providing the config file, you can also pass options as command line arguments, which will override those used in the config. For the full list of available (and default) options refer to [`utils/options.py`](utils/options.py) file. 
@@ -109,13 +107,13 @@ The following Google Colab compatible Jupyter notebooks are available:
 
   | Network             | Number of parameters  |  mIoU   | Config file | 
   | :---                |         :---:         |   :---: |    :---:    |
-  | DeepLabV3+          |         5.81M         |  61.33  | `deeplabv3plus.yaml`|
-  | DY-DeepLabV3+       |         18.4M         |  61.21  | `dy_deeplabv3plus.yaml`|
+  | DeepLabV3+          |         5.81M         |  65.09  | `deeplabv3plus.yaml`|
+  | DY-DeepLabV3+       |         18.4M         |  65.45  | `dy_deeplabv3plus.yaml`|
 
 
 - Dataset: Pascal VOC 2012 + SBD (only used for training)
   
   | Network             | Number of parameters  |  mIoU  | Config file | 
   | :---                |         :---:         |  :---: |    :---:    |
-  | DeepLabV3+ x 0.5    |      |  | `deeplabv3plus_0.5.yaml` |
-  | DY-DeepLabV3+ x 0.5 |      |  | `dy_deeplabv3plus_0.5.yaml` |
+  | DeepLabV3+ x 0.5    |         3.40M         |  70.23 | `deeplabv3plus_0.5.yaml` |
+  | DY-DeepLabV3+ x 0.5 |         8.44M         |  71.09 | `dy_deeplabv3plus_0.5.yaml` |
