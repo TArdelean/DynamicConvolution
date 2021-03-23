@@ -84,6 +84,7 @@ tensorboard --logdir experiments
 The following Google Colab compatible Jupyter notebooks are available:
 - [`notebooks/DyConv_training.ipynb`](notebooks/DyConv_training.ipynb) - Self-explanatory training procedure
 - [`notebooks/DyConv_profiling.ipynb`](notebooks/DyConv_profiling.ipynb) - Profile number of parameters, FLOPS and inference time
+- [`notebooks/DyConv_inspect.ipynb`](notebooks/DyConv_inspect.ipynb) - Inspect the distribution of attentions computed by Dynamic Convolutions
 
 ### Experimental results
 

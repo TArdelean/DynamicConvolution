@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import models
 import data
 from dynamic_convolutions import DynamicConvolution, FlexibleKernelsDynamicConvolution
-from train import test
+from train import test_accuracy as test
 from utils.options import Options
 
 
