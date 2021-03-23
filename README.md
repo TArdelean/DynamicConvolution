@@ -50,7 +50,7 @@ Main prerequisites are:
 For convenience, a ready to use conda [environment](environment.yml) is provided. 
 To create a new python environment with all the required packages, you can run:
 ```shell
-conda env create -f environment.yaml
+conda env create -f environment.yml
 conda activate dyconv
 ```
 
@@ -83,6 +83,7 @@ tensorboard --logdir experiments
 
 The following Google Colab compatible Jupyter notebooks are available:
 - [`notebooks/DyConv_training.ipynb`](notebooks/DyConv_training.ipynb) - Self-explanatory training procedure
+- [`notebooks/DyConv_profiling.ipynb`](notebooks/DyConv_profiling.ipynb) - Profile number of parameters, FLOPS and inference time
 
 ### Experimental results
 

@@ -90,7 +90,7 @@ class InvertedResidual(TempModule):
 
 
 class MobileNetV2(BaseModel):
-    def __init__(self, conv, num_classes=200, depth_multiplier=0.35):
+    def __init__(self, conv, num_classes=200, width_multiplier=0.35):
         super(MobileNetV2, self).__init__(conv)
         # setting of inverted residual blocks
         self.cfgs = [
@@ -105,18 +105,18 @@ class MobileNetV2(BaseModel):
         ]
 
         # building first layer
-        input_channel = _make_divisible(32 * depth_multiplier, 4 if depth_multiplier == 0.1 else 8)
+        input_channel = _make_divisible(32 * width_multiplier, 4 if width_multiplier == 0.1 else 8)
         layers = [conv_3x3_bn(3, input_channel, 2, conv=nn.Conv2d)]
         # building inverted residual blocks
         block = InvertedResidual
         for t, c, n, s in self.cfgs:
-            output_channel = _make_divisible(c * depth_multiplier, 4 if depth_multiplier == 0.1 else 8)
+            output_channel = _make_divisible(c * width_multiplier, 4 if width_multiplier == 0.1 else 8)
             for i in range(n):
                 layers.append(block(input_channel, output_channel, s if i == 0 else 1, t, conv=self.ConvLayer))
                 input_channel = output_channel
         self.features = CustomSequential(*layers)
         # building last several layers
-        output_channel = _make_divisible(1280 * depth_multiplier, 4 if depth_multiplier == 0.1 else 8) if depth_multiplier > 1.0 else 1280
+        output_channel = _make_divisible(1280 * width_multiplier, 4 if width_multiplier == 0.1 else 8) if width_multiplier > 1.0 else 1280
         self.conv = conv_1x1_bn(input_channel, output_channel, conv=self.ConvLayer)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.classifier = nn.Linear(output_channel, num_classes)

@@ -70,9 +70,9 @@ class ResNet(BaseModel):
         return out
 
 
-def ResNet10(ConvLayer, width_multiplier=1.0):
-    return ResNet(ConvLayer, BasicBlock, [1, 1, 1, 1], width_multiplier)
+def ResNet10(ConvLayer, width_multiplier=1.0, num_classes=200):
+    return ResNet(ConvLayer, BasicBlock, [1, 1, 1, 1], width_multiplier, num_classes=num_classes)
 
 
-def ResNet18(ConvLayer, width_multiplier=1.0):
-    return ResNet(ConvLayer, BasicBlock, [2, 2, 2, 2], width_multiplier)
+def ResNet18(ConvLayer, width_multiplier=1.0, num_classes=200):
+    return ResNet(ConvLayer, BasicBlock, [2, 2, 2, 2], width_multiplier, num_classes=num_classes)
