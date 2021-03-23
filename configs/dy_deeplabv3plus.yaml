@@ -19,5 +19,6 @@ scheduler : "CosineAnnealingLR"
 scheduler_args : (100, 0.000001)
 criterion: "CrossEntropyLoss"
 criterion_args: (None, True, 255)
+batch_average: False
 num_workers: 2
 device : "cuda"
