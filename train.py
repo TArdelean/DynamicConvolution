@@ -19,7 +19,7 @@ from utils.utils import load_checkpoint, save_checkpoint
 
 def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module, temperature: TemperatureScheduler,
                 optimizer: torch.optim.Optimizer, loader: torch.utils.data.DataLoader, device: torch.device,
-                writer: SummaryWriter = None):
+                writer: SummaryWriter = None, batch_average=False):
     model.train()
     print(f"Training epoch {epoch}")
     t_bar = tqdm(loader)
@@ -29,6 +29,8 @@ def train_epoch(epoch: int, model: nn.Module, criterion: nn.Module, temperature:
         in_data, target = in_data.to(device), target.to(device)
         out = model(in_data, temperature.get(epoch))
         loss = criterion(out, target)
+        if batch_average:
+            loss /= loader.batch_size
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -97,7 +99,7 @@ def main(opt: Options):
 
     print('Setting up complete, starting training')
     for ep in range(epoch + 1, opt.max_epoch+1):
-        train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer)
+        train_epoch(ep, model, criterion, temperature, optimizer, train_dl, device, writer, batch_average=opt.batch_average)
         test_score = test_metric(model, temperature.get(ep), test_dl, device)
         writer.add_scalar(f"{metric_name}/test", test_score, ep * len(test_dl.dataset))
         print(f"Test {metric_name} after {ep} epochs = {test_score}")
