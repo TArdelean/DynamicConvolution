@@ -92,14 +92,15 @@ The following Google Colab compatible Jupyter notebooks are available:
 
 - Dataset: Tiny ImageNet
 
-  | Network             | Number of parameters |  Accuracy  |         Config file       |   
-  | :---                |         :---:        |    :---:   |            :---:          |
-  | ResNet-10           |         5.00M        |    56.86   |  `Resnet_Vanilla_1.yaml`  |
-  | DY-ResNet-10        |        19.80M        | **58.17**  |     `Resnet_DY_1.yaml`    |
-  | ResNet-10 x 0.5     |         1.27M        |    52.78   |  `Resnet_Vanilla_05.yaml` |
-  | DY-ResNet-10 x 0.5  |         4.97M        |    53.92   |  `Resnet_DY_05.yaml`      |
-  | ResNet-10 x 0.25    |         0.33M        |    46.17   | `Resnet_Vanilla_025.yaml` |
-  | DY-ResNet-10 x 0.25 |         1.25M        |    38.05   |    `Resnet_DY_025.yaml`   |
+  | Network                 | Number of parameters |  Accuracy  |         Config file       |   
+  | :---                    |         :---:        |    :---:   |            :---:          |
+  | ResNet-10               |         5.00M        |    56.86   |  `Resnet_Vanilla_1.yaml`  |
+  | DY-ResNet-10            |        19.80M        | **58.17**  |     `Resnet_DY_1.yaml`    |
+  | ResNet-10 x 0.5         |         1.27M        |    52.78   |  `Resnet_Vanilla_05.yaml` |
+  | DY-ResNet-10 x 0.5      |         4.97M        |    53.92   |  `Resnet_DY_05.yaml`      |
+  | DY-ResNet-10 x 0.5 (**) |         4.97M        |    55.38   |`Resnet_DY_Leaky_05_smooth.yaml`|
+  | ResNet-10 x 0.25        |         0.33M        |    46.17   | `Resnet_Vanilla_025.yaml` |
+  | DY-ResNet-10 x 0.25     |         1.25M        |    48.05   |    `Resnet_DY_025.yaml`   |
 
 #### Segmentation
 
