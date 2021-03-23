@@ -1,0 +1,22 @@
+use_dynamic: False
+nof_kernels: 4
+reduce: 4
+temperature: (30, 1, 10)
+experiments: '/content/drive/MyDrive/DynamicConvolution/experiments'
+model_class: 'ResNet10'
+dataset_class: 'TinyImageNet_dataset'
+experiment_name: 'Resnet_Vanilla_1'
+checkpoint_path: None
+max_epoch: 100
+save_freq: 5
+batch_size: 64
+num_workers: 2
+optimizer: 'SGD'
+optimizer_args: (0.1, 0.9, 0, 0.0001)
+scheduler: 'StepLR'
+scheduler_args: (30, 0.1)
+criterion: 'NLLLoss'
+criterion_args: ()
+device: 'cuda'
+model_extra_args: (1.0,)
+checkpoints_dir: '/content/drive/MyDrive/DynamicConvolution/experiments/Resnet_Vanilla_1'
