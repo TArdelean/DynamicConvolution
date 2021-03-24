@@ -1,12 +1,12 @@
-/content/drive/MyDrive/DynamicConvolution/configs/mobilenetv2.yaml: ''
 use_dynamic: True
 nof_kernels: 4
 reduce: 4
 temperature: (60, 1, 60)
 experiments: 'experiments'
 model_class: 'MobileNetV2'
+model_extra_args: ()
 dataset_class: 'TinyImageNet_dataset'
-experiment_name: 'MobileNetV2_035_dy_tiny_t6060_300ep'
+experiment_name: 'MobileNetV2_DY_035_60_60'
 checkpoint_path: None
 max_epoch: 300
 save_freq: 5
@@ -16,5 +16,7 @@ optimizer: 'SGD'
 optimizer_args: (0.05, 0.9, 0, 4e-05)
 scheduler: 'CosineAnnealingLR'
 scheduler_args: (300, 0)
+criterion: 'CrossEntropyLoss'
+criterion_args: ''
 device: 'cuda'
-checkpoints_dir: 'experiments/MobileNetV2_035_dy_tiny_t6060_300ep'
+checkpoints_dir: 'experiments/MobileNetV2_DY_035_60_60'

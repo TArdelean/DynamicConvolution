@@ -1,0 +1,21 @@
+use_dynamic: True
+nof_kernels: 4
+reduce: 4
+temperature: (30, 1, 10)
+experiments: 'experiments'
+model_class: 'MobileNetV3'
+dataset_class: 'Imagenette_dataset'
+experiment_name: 'MobileNetV3_Vanilla_025_Imagenette'
+checkpoint_path: None
+max_epoch: 200
+save_freq: 5
+batch_size: 256
+num_workers: 2
+optimizer: 'SGD'
+optimizer_args: (0.1, 0.9, 0, 3e-5)
+scheduler: 'CosineAnnealingLR'
+scheduler_args: (200, 0)
+criterion: 'NLLLoss'
+criterion_args: ()
+device: 'cuda'
+model_extra_args: (0.25, 10, 2)

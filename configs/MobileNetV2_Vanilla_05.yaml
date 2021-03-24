@@ -1,12 +1,11 @@
-/home/sayan/Desktop/ml_project/DynamicConvolution/configs/mobilenetv2.yaml: ''
-use_dynamic: True
+use_dynamic: False
 nof_kernels: 4
 reduce: 4
 temperature: (30, 1, 10)
 experiments: 'experiments'
 model_class: 'MobileNetV2'
 dataset_class: 'TinyImageNet_dataset'
-experiment_name: 'MobileNetV2_dy'
+experiment_name: 'MobileNetV2_Vanilla_05'
 checkpoint_path: None
 max_epoch: 300
 save_freq: 5
@@ -17,4 +16,6 @@ optimizer_args: (0.05, 0.9, 0, 4e-05)
 scheduler: 'CosineAnnealingLR'
 scheduler_args: (300, 0)
 device: 'cuda'
-checkpoints_dir: 'experiments/MobileNetV2_dy'
+criterion: 'NLLLoss'
+criterion_args: ()
+model_extra_args: (200, 0.5)

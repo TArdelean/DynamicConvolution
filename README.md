@@ -16,7 +16,7 @@ Source code of the Project for the Machine Learning course at Skoltech 2021.
 
 ### Brief repository overview
 
-* [`configs/`](`configs/) - configuration files to be used with `train.py` to train different combinations of models / datasets / optimizers / schedulers and their parameters
+* [`configs/`](configs/) - configuration files to be used with `train.py` to train different combinations of models / datasets / optimizers / schedulers and their parameters
 * [`data/`](data/) - datasets downloading and setting up:
    * `imagenette_dataset.py` - Imagenette dataset ([download](https://s3.amazonaws.com/fast-ai-imageclas/imagenette2-320.tgz)), which is a small ImageNet subset of 10 classes. 
    * `tinyimagenet_dataset.py` - Tiny ImageNet dataset ([download](http://cs231n.stanford.edu/tiny-imagenet-200.zip)),  which is a small ImageNet subset of 200 classes with 600 images per class. 
@@ -61,8 +61,8 @@ The training process can be started with the provided script:
 python train.py --config_path "configs/<name>.yaml"
 ```
 where `<name>.yaml` refers to a configuration file ([`configs/`](configs)) facilitating experiment reproducibility. Among the available training setups there are: 
-* `mobilenetv2.yaml` - baseline of MobileNetV2 
-* `mobilenetv3.yaml` - Dynamic Convolution version of MobileNetV3 trained on TinyImageNet
+* `MobileNetV2_[type]_[width-multiplier]_[temperature]` - various setups of MobileNetV2 architecture
+* `MobileNetV3_[type]_[width-multiplier]_[dataset]` - various setups of MobileNetV3 architecture
 * `deeplabv3plus.yaml`, `dy_deeplabv3plus.yaml` - DeepLabV3+ with MobileNetV2 backbone trained on Pascal VOC 2012 dataset (and Dynamic Convolution variant)
 * `deeplabv3plus_0.5.yaml`, `dy_deeplabv3plus_0.5.yaml` - baseline of DeepLabV3+ with MobileNetV2 backbone and x0.5 width convolutions, trained on a combination of Pascal VOC 2012 and Semantic Boundaries datasets (and Dynamic Convolution variant)
 * `Resnet_[type]_[width-multiplier]` - various setups of ResNet architecture
@@ -92,15 +92,32 @@ The following Google Colab compatible Jupyter notebooks are available:
 
 - Dataset: Tiny ImageNet
 
-  | Network                 | Number of parameters |  Accuracy  |         Config file       |   
-  | :---                    |         :---:        |    :---:   |            :---:          |
-  | ResNet-10               |         5.00M        |    56.86   |  `Resnet_Vanilla_1.yaml`  |
-  | DY-ResNet-10            |        19.80M        | **58.17**  |     `Resnet_DY_1.yaml`    |
-  | ResNet-10 x 0.5         |         1.27M        |    52.78   |  `Resnet_Vanilla_05.yaml` |
-  | DY-ResNet-10 x 0.5      |         4.97M        |    53.92   |  `Resnet_DY_05.yaml`      |
-  | DY-ResNet-10 x 0.5 (**) |         4.97M        |    55.38   |`Resnet_DY_Leaky_05_smooth.yaml`|
-  | ResNet-10 x 0.25        |         0.33M        |    46.17   | `Resnet_Vanilla_025.yaml` |
-  | DY-ResNet-10 x 0.25     |         1.25M        |    48.05   |    `Resnet_DY_025.yaml`   |
+  | Network                 |  Number of parameters |  Accuracy  |         Config file       |   
+  | :---                    |         :---:         |    :---:   |            :---:          |
+  | ResNet-10               |         5.00M         |    56.86   |  `Resnet_Vanilla_1.yaml`  |
+  | DY-ResNet-10            |        19.80M         | **58.17**  |     `Resnet_DY_1.yaml`    |
+  | ResNet-10 x 0.5         |         1.27M         |    52.78   |  `Resnet_Vanilla_05.yaml` |
+  | DY-ResNet-10 x 0.5      |         4.97M         |    53.92   |  `Resnet_DY_05.yaml`      |
+  | DY-ResNet-10 x 0.5 (**) |         4.97M         |    55.38   |`Resnet_DY_Leaky_05_smooth.yaml`|
+  | ResNet-10 x 0.25        |         0.33M         |    46.17   | `Resnet_Vanilla_025.yaml` |
+  | DY-ResNet-10 x 0.25     |         1.25M         |    48.05   |    `Resnet_DY_025.yaml`   |
+  | MobileNetV2 x 0.35      |         0.65M         |    34.05   |  `MobileNetV2_Vanilla_035.yaml`|
+  | DY-MobileNetV2 x 0.35   |         2.09M         |    31.91   |  `MobileNetV2_DY_035.yaml`|
+  | MobileNetV3 x 0.5       |         0.87M         |    53.36   |  `MobileNetV3_Vanilla_05_Tiny.yaml`|
+  | DY-MobileNetV3 x 0.5    |         2.52M         |    50.95   |  `MobileNetV3_DY_05_Tiny.yaml` |
+  | MobileNetV3             |         1.91M         |    55.53   |  `MobileNetV3_Vanilla_1_Tiny.yaml` |
+  | DY-MobileNetV3          |         6.04M         |    53.59   |  `MobileNetV3_DY_1_Tiny.yaml` |
+
+- Dataset: Imagenette
+
+  | Network                 |  Number of parameters |  Accuracy  |         Config file       |   
+  | :---                    |         :---:         |    :---:   |            :---:          |
+  | MobileNetV3 x 0.25      |         0.27M         |    85.07   |  `MobileNetV3_Vanilla_025_Imagenette.yaml` |
+  | DY-MobileNetV3 x 0.25   |         0.99M         |    85.24   |  `MobileNetV3_DY_025_Imagenette.yaml` |
+  | MobileNetV3 x 0.5       |         0.63M         |    87.31   |  `MobileNetV3_Vanilla_05_Imagenette.yaml` |
+  | DY-MobileNetV3 x 0.5    |         2.28M         |    87.89   |  `MobileNetV3_DY_05_Imagenette.yaml` |
+  | MobileNetV3             |         1.67M         |    88.40   |  `MobileNetV3_Vanilla_1_Imagenette.yaml` |
+  | DY-MobileNetV3          |         5.80M         |  **89.32** |  `MobileNetV3_DY_1_Imagenette.yaml` |
 
 #### Segmentation
 
